@@ -9,5 +9,5 @@ A foundational 3D project focused on smooth movement and environment interaction
 
 ## How to Play
 1. Clone the repository.
-2. Open in **Unity 6 (6000.x.x)**.
+2. Open in **Unity 6**.
 3. Press Play, Use [ZQSD] to move, hold SHIFT to jump while on the ground, hold SHIFT in the air to Air Boost, hold Z to glide and S to slow down.
