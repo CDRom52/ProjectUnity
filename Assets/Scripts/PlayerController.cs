@@ -107,6 +107,10 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     void Update()
     {
         //Debug.Log("Velocity : " + velocity.magnitude + " | Stamina : " + currentStamina);
+        Vector3 cameraForward = Vector3.Scale(cameraTransform.forward, new Vector3(1, 0, 1)).normalized;
+        Vector3 cameraRight   = Vector3.Scale(cameraTransform.right,   new Vector3(1, 0, 1)).normalized;
+        Vector3 movement = cameraForward * movementY + cameraRight * movementX; //mouvement relatif à la caméra
+        movement = Vector3.ClampMagnitude(movement, 1f); // Empêche de dépasser une magnitude de 1 quand on bouge en diagonale
 
         //QUAND ON NE PEUT RIEN FAIRE (atterrissage, crash)
         if (isLanding || isCrashed)
@@ -173,6 +177,8 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             if (controller.isGrounded)
             {
                 velocity.y = currentChargeJump;
+                velocity.x += movement.x * currentChargeJump * 0.5f;
+                velocity.z += movement.z * currentChargeJump * 0.5f;
                 currentStamina -= staminaJumpCost * (currentChargeJump / maxChargeJump);
                 currentChargeJump = 0f;
                 isSprinting = false;
@@ -206,10 +212,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         //ACTIONS SANS STAMINA (mouvement au sol, saut, planer)
 
         // Crée un repère sur le plan horizontal, par rapport à la caméra
-        Vector3 cameraForward = Vector3.Scale(cameraTransform.forward, new Vector3(1, 0, 1)).normalized;
-        Vector3 cameraRight   = Vector3.Scale(cameraTransform.right,   new Vector3(1, 0, 1)).normalized;
-        Vector3 movement = cameraForward * movementY + cameraRight * movementX; //mouvement relatif à la caméra
-        movement = Vector3.ClampMagnitude(movement, 1f); // Empêche de dépasser une magnitude de 1 quand on bouge en diagonale
+        
 
         
         if (controller.isGrounded) // soit on est au sol
