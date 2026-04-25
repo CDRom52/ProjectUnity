@@ -150,7 +150,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
                 currentChargeJump += chargeJumpRate * Time.deltaTime;
                 currentChargeJump = Mathf.Min(currentChargeJump, maxChargeJump);
             }
-            else if (!controller.isGrounded && !isBoosting && currentStamina > staminaUseRate) //soit on active un boost
+            else if (!controller.isGrounded && !isBoosting && currentStamina > staminaUseRate && movementY > 0) //soit on active un boost
             {
                 isBoosting = true;
                 isGliding = false;

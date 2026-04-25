@@ -4,15 +4,20 @@ using UnityEngine.UI; //Pour manipuler les Sliders
 public class HUDManager : MonoBehaviour
 {
     public Slider staminaSlider;
-    public PlayerController player;
+    public Slider healthSlider;
+    
+    public PlayerController playerMove;
+    public PlayerHealth playerHealth;
 
     void Start()
     {
-        staminaSlider.maxValue = player.maxStamina;
+        staminaSlider.maxValue = playerMove.maxStamina;
+        healthSlider.maxValue = playerHealth.maxHealth;
     }
 
     void Update()
     {
-        staminaSlider.value = player.currentStamina;
+        staminaSlider.value = playerMove.currentStamina;
+        healthSlider.value = playerHealth.currentHealth;
     }
 }
