@@ -60,13 +60,6 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public bool isBoosting = false; //Si le joueur utilise le boost aérien
     public bool isCrashed = false;
 
-    [Header("Stamina")]
-    public float maxStamina = 100f;
-    public float currentStamina;
-    public float staminaRegenTime = 5f; // Temps pour régénérer toute la stamina
-    public float staminaRegenRate; // Stamina régénérée par seconde
-    public float staminaUseRate = 25f; // Stamina utilisée par seconde
-    public float staminaJumpCost = 20f; // Stamina utilisée pour un super saut
 
     [Header("References")]
     public CharacterController controller; // Référence au CharacterController du joueur
@@ -74,6 +67,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public Transform cameraTransform; // Référence au Transform de la caméra : objet lié à la position, rotation, échelle, ...
     public LayerMask groundMask;
     public GameObject impactPrefab;
+    public PlayerStats stats;
 
     [Header("Animation Settings")]
     public bool isLanding = false;
@@ -84,10 +78,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     {
         controller = GetComponent<CharacterController>(); // GetComponent : hérité de MonoBehaviour
         //< > : précise le type de l'entrée
-
-        currentStamina = maxStamina;
         chargeJumpRate = maxChargeJump / chargeJumpTime;
-        staminaRegenRate = maxStamina / staminaRegenTime; // Régénère toute la stamina en 5 secondes
     }
 
     void OnMove(InputValue movementValue) // Callback appelé quand il y a une entrée de mouvement
@@ -107,6 +98,8 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     void Update()
     {
         //Debug.Log("Velocity : " + velocity.magnitude + " | Stamina : " + currentStamina);
+
+        // Crée un repère sur le plan horizontal, par rapport à la caméra
         Vector3 cameraForward = Vector3.Scale(cameraTransform.forward, new Vector3(1, 0, 1)).normalized;
         Vector3 cameraRight   = Vector3.Scale(cameraTransform.right,   new Vector3(1, 0, 1)).normalized;
         Vector3 movement = cameraForward * movementY + cameraRight * movementX; //mouvement relatif à la caméra
@@ -132,11 +125,6 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
                 velocity.x = Mathf.Lerp(velocity.x, 0f, dynamicDecel * Time.deltaTime);
                 velocity.z = Mathf.Lerp(velocity.z, 0f, dynamicDecel * Time.deltaTime);
             }
-            if (currentStamina < maxStamina)
-            {
-                currentStamina += staminaRegenRate * Time.deltaTime;
-                currentStamina = Mathf.Min(currentStamina, maxStamina);
-            }
             controller.Move(velocity * Time.deltaTime);
             ApplyVisualTilt();
             return;
@@ -145,19 +133,19 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         //ACTIONS QUI COÛTENT DE LA STAMINA (super jump, boost)
         if (isSprinting) //soit on sprint
         {
-            if (controller.isGrounded && currentStamina >= staminaJumpCost && currentChargeJump < maxChargeJump) //soit on charge un jump
+            if (controller.isGrounded && stats.canJump && currentChargeJump < maxChargeJump) //soit on charge un jump
             {
                 currentChargeJump += chargeJumpRate * Time.deltaTime;
                 currentChargeJump = Mathf.Min(currentChargeJump, maxChargeJump);
             }
-            else if (!controller.isGrounded && !isBoosting && currentStamina > staminaUseRate && movementY > 0) //soit on active un boost
+            else if (!controller.isGrounded && !isBoosting && stats.canBoost && movementY > 0) //soit on active un boost
             {
                 isBoosting = true;
                 isGliding = false;
             }
-            else if (currentStamina < staminaUseRate)
+            else if (!stats.canBoost)
                 isBoosting = false;
-            else if (isBoosting && currentStamina > 0f) //soit on applique le boost
+            else if (isBoosting && stats.canBoost) //soit on applique le boost
             {
                 Vector3 boostDirectionHorizontal;
                 boostDirection = cameraTransform.forward.normalized;
@@ -169,19 +157,19 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
                 
                 Quaternion targetRotation = Quaternion.LookRotation(boostDirectionHorizontal);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, boostRotationSpeed * Time.deltaTime);
-                currentStamina -= staminaUseRate * Time.deltaTime;
+                stats.AirBoost();
             }
         }
-        else if (currentChargeJump > 0f) //soit on fait un super jump
+        else if (currentChargeJump > 0f && stats.canJump) //soit on fait un super jump
         {
             if (controller.isGrounded)
             {
                 velocity.y = currentChargeJump;
                 velocity.x += movement.x * currentChargeJump * 0.5f;
                 velocity.z += movement.z * currentChargeJump * 0.5f;
-                currentStamina -= staminaJumpCost * (currentChargeJump / maxChargeJump);
                 currentChargeJump = 0f;
                 isSprinting = false;
+                stats.ChargeJump();
             }
             else
                 currentChargeJump = 0f;
@@ -190,11 +178,6 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         {
             isBoosting = false;
             isGliding = false;
-        }
-        else if (currentStamina < maxStamina) //soit on régénère la stamina
-        {
-            currentStamina += staminaRegenRate * Time.deltaTime;
-            currentStamina = Mathf.Min(currentStamina, maxStamina);
         }
 
         //Gravité
@@ -210,11 +193,6 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
 
         //ACTIONS SANS STAMINA (mouvement au sol, saut, planer)
-
-        // Crée un repère sur le plan horizontal, par rapport à la caméra
-        
-
-        
         if (controller.isGrounded) // soit on est au sol
         {
             float horizontalSpeed = new Vector3(velocity.x, 0f, velocity.z).magnitude;
@@ -235,7 +213,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         }
         else if (!isGliding && !isBoosting) //soit on tombe
         {
-            if (movementY > 0 && velocity.magnitude > airLiftVelocity)
+            if (movementY > 0 && velocity.magnitude > airLiftVelocity && stats.canFly)
             {
                 isGliding = true;
             }
@@ -269,7 +247,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
                 transform.rotation = Quaternion.LookRotation(horizontalVelocity);
             }
 
-            if (movementY <= 0 || newSpeed < stallVelocity) isGliding = false;
+            if (movementY <= 0 || newSpeed < stallVelocity || !stats.canFly) isGliding = false;
         }
 
 

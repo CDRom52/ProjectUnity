@@ -5,19 +5,20 @@ public class HUDManager : MonoBehaviour
 {
     public Slider staminaSlider;
     public Slider healthSlider;
-    
-    public PlayerController playerMove;
-    public PlayerHealth playerHealth;
+    public Slider energySlider;
+    public PlayerStats stats;
 
     void Start()
     {
-        staminaSlider.maxValue = playerMove.maxStamina;
-        healthSlider.maxValue = playerHealth.maxHealth;
+        staminaSlider.maxValue = stats.maxStamina;
+        healthSlider.maxValue = stats.maxHealth;
+        energySlider.maxValue = stats.maxEnergy;
     }
 
     void Update()
     {
-        staminaSlider.value = playerMove.currentStamina;
-        healthSlider.value = playerHealth.currentHealth;
+        staminaSlider.value = stats.currentStamina;
+        healthSlider.value = stats.currentHealth;
+        energySlider.value = stats.currentEnergy;
     }
 }

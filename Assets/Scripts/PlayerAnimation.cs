@@ -12,6 +12,7 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
     private CharacterController controller; // Référence au CharacterController du joueur
     public Transform player;
     public PlayerController playerScript;
+    public PlayerStats stats;
     public LayerMask groundMask;
 
     [Header("Idle Settings")]
@@ -76,6 +77,7 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
         anim.SetBool("IsSprinting", playerScript.isSprinting);
         anim.SetBool("IsCrashed", playerScript.isCrashed);
         anim.SetBool("IsBraking", playerScript.isBraking);
+        anim.SetBool("CanJump", stats.canJump);
     }
 
     void HandleIdleTimer()

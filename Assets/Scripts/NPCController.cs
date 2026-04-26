@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.AI;
-using System.Collections;
 
 public class NPCController : MonoBehaviour
 {
@@ -9,13 +8,19 @@ public class NPCController : MonoBehaviour
     
     private NavMeshAgent agent;
     private float timer;
-    private Rigidbody rb;
-    private bool isHit = false; // We'll use this to "freeze" the NPC
+    private bool isHit = false;
+
+    private Animator anim;
+    private Rigidbody[] ragdollRigidbodies;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        rb = GetComponent<Rigidbody>();
+        anim = GetComponent<Animator>();
+        
+        ragdollRigidbodies = GetComponentsInChildren<Rigidbody>();
+        
+        SetRagdollState(false);
         timer = waitTime;
     }
 
@@ -35,34 +40,56 @@ public class NPCController : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        // Only trigger if the object has the "Player" tag
         if (other.CompareTag("Player") && !isHit)
         {
-            StopMoving();
+            TriggerRagdoll();
         }
     }
 
-    void StopMoving()
+    void TriggerRagdoll()
     {
         isHit = true;
-        
-        if (agent != null && agent.isActiveAndEnabled)
+        transform.position += Vector3.up * 10f;
+
+        // 1. Disable the Animator IMMEDIATELY
+        Animator anim = GetComponent<Animator>();
+        if (anim != null)
         {
-            agent.isStopped = true; // Stop current movement
-            agent.enabled = false;  // Turn off the agent
+            anim.enabled = false; 
         }
 
-        Debug.Log(gameObject.name + " has been stopped by the Player!");
+        // 2. Disable navigation (so they don't slide while lying down)
+        if (agent != null)
+        {
+            agent.isStopped = true;
+            agent.enabled = false;
+        }
+
+        // 3. Let physics take over
+        SetRagdollState(true); 
+
+        // 4. Disable the main "collision detector" capsule
+        if (GetComponent<CapsuleCollider>() != null)
+            GetComponent<CapsuleCollider>().enabled = false;
+
+        Debug.Log(gameObject.name + " is now a ragdoll!");
+    }
+
+    void SetRagdollState(bool state)
+    {
+        foreach (Rigidbody rb in ragdollRigidbodies)
+        {
+            // If state is true, IsKinematic is false (physics takes over)
+            rb.isKinematic = !state; 
+        }
     }
 
     public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
     {
         Vector3 randDirection = Random.insideUnitSphere * dist;
         randDirection += origin;
-
         NavMeshHit navHit;
         NavMesh.SamplePosition(randDirection, out navHit, dist, layermask);
-
         return navHit.position;
     }
 }
