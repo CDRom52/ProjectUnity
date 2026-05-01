@@ -3,93 +3,81 @@ using UnityEngine.AI;
 
 public class NPCController : MonoBehaviour
 {
-    public float wanderRadius = 20f;
-    public float waitTime = 3f;
-    
-    private NavMeshAgent agent;
-    private float timer;
-    private bool isHit = false;
+    [Header("Player Collision")]
+    private bool isRagdoll = false;
+    public float hitCoeff = 50f;
+    private float lastHitTime = -Mathf.Infinity;
+    public float hitCooldown = 0.5f;
 
+
+    [Header("References")]
     private Animator anim;
     private Rigidbody[] ragdollRigidbodies;
+    private Collider[] ragdollColliders;
+    public GameObject armatureObject;
+    public GameObject modelObject;
+    private CharacterController playerController;
+    private Rigidbody hipsRb;
+    private Collider NPCCollider;
+
+
+    
 
     void Start()
     {
-        agent = GetComponent<NavMeshAgent>();
-        anim = GetComponent<Animator>();
-        
-        ragdollRigidbodies = GetComponentsInChildren<Rigidbody>();
-        
+        playerController = GameObject.FindWithTag("Player").GetComponent<CharacterController>();
+        anim = modelObject.GetComponent<Animator>();
+        ragdollColliders = armatureObject.GetComponentsInChildren<Collider>();
+        ragdollRigidbodies = armatureObject.GetComponentsInChildren<Rigidbody>();
+        hipsRb = armatureObject.GetComponentInChildren<Rigidbody>();
+        NPCCollider = GetComponent<CapsuleCollider>();
+
+        foreach (Rigidbody rb in ragdollRigidbodies)
+            rb.gameObject.AddComponent<RagdollBone>();
+
         SetRagdollState(false);
-        timer = waitTime;
-    }
-
-    void Update()
-    {
-        if (isHit) return;
-
-        timer += Time.deltaTime;
-
-        if (timer >= waitTime && (!agent.hasPath || agent.remainingDistance <= agent.stoppingDistance))
-        {
-            Vector3 newPos = RandomNavSphere(transform.position, wanderRadius, -1);
-            agent.SetDestination(newPos);
-            timer = 0;
-        }
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") && !isHit)
+        Debug.Log("Trigger with: " + other.gameObject.name + " | Tag: " + other.tag);
+        if (other.CompareTag("Player"))
         {
-            TriggerRagdoll();
+            if (!isRagdoll)
+                SetRagdollState(true);
+            PlayerPushReaction();
         }
     }
 
-    void TriggerRagdoll()
+    public void OnBoneCollision(Collision collision)
     {
-        isHit = true;
-        transform.position += Vector3.up * 10f;
-
-        // 1. Disable the Animator IMMEDIATELY
-        Animator anim = GetComponent<Animator>();
-        if (anim != null)
+        if (collision.collider.CompareTag("Player") && Time.time - lastHitTime > hitCooldown)
         {
-            anim.enabled = false; 
+            Debug.Log("Ragdoll hit: " + collision.collider.gameObject.name);
+            lastHitTime = Time.time;
         }
-
-        // 2. Disable navigation (so they don't slide while lying down)
-        if (agent != null)
-        {
-            agent.isStopped = true;
-            agent.enabled = false;
-        }
-
-        // 3. Let physics take over
-        SetRagdollState(true); 
-
-        // 4. Disable the main "collision detector" capsule
-        if (GetComponent<CapsuleCollider>() != null)
-            GetComponent<CapsuleCollider>().enabled = false;
-
-        Debug.Log(gameObject.name + " is now a ragdoll!");
     }
 
     void SetRagdollState(bool state)
     {
+        isRagdoll = state;
+        anim.enabled = !state;
+
         foreach (Rigidbody rb in ragdollRigidbodies)
+            rb.isKinematic = !state;
+        
+        foreach (Collider col in ragdollColliders)
         {
-            // If state is true, IsKinematic is false (physics takes over)
-            rb.isKinematic = !state; 
+            col.enabled = state;
+            col.gameObject.layer = state ? LayerMask.NameToLayer("NPCRagdoll") : LayerMask.NameToLayer("Default");
         }
+
+        NPCCollider.enabled = !state;
     }
 
-    public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
+    void PlayerPushReaction()
     {
-        Vector3 randDirection = Random.insideUnitSphere * dist;
-        randDirection += origin;
-        NavMeshHit navHit;
-        NavMesh.SamplePosition(randDirection, out navHit, dist, layermask);
-        return navHit.position;
+        Vector3 force = playerController.velocity * hitCoeff;
+        hipsRb.AddForce(force, ForceMode.Impulse);
     }
 }

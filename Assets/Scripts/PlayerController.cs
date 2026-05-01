@@ -76,8 +76,8 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     //void : fonction qui ne renvoie rien
     void Start() // Callback appelé avant le premier update
     {
-        controller = GetComponent<CharacterController>(); // GetComponent : hérité de MonoBehaviour
         //< > : précise le type de l'entrée
+        controller = GetComponent<CharacterController>(); // GetComponent : hérité de MonoBehaviour 
         chargeJumpRate = maxChargeJump / chargeJumpTime;
     }
 
@@ -94,11 +94,9 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         isSprinting = value.isPressed;
     }
 
-
     void Update()
     {
         //Debug.Log("Velocity : " + velocity.magnitude + " | Stamina : " + currentStamina);
-
         // Crée un repère sur le plan horizontal, par rapport à la caméra
         Vector3 cameraForward = Vector3.Scale(cameraTransform.forward, new Vector3(1, 0, 1)).normalized;
         Vector3 cameraRight   = Vector3.Scale(cameraTransform.right,   new Vector3(1, 0, 1)).normalized;
@@ -312,5 +310,4 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         }
         //Debug.Log("Downard orientation : " + downwardOrientation + " | Speed : " + speed);
     }
-
 }
