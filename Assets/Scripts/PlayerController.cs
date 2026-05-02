@@ -42,6 +42,9 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public float glideTurnSpeed = 10f;
 
     [Header("Crashing")]
+    public bool isRagdoll = false;
+    public bool hipsGrounded = false;
+    public float hipsHorizontalSpeed;
     public float crashPitchAngle = 40f;
     public float crashTurnSpeed = 10f;
     public float currentCrashPitch = 0f;
@@ -52,6 +55,11 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public float brakeDrag = 50f;
     public float brakePitchAngle = 40f;
 
+    [Header("Grabbing NPC")]
+    public float grabSpeedMultiplier = 0.3f;
+    float speedMultiplier => grabbedNPC != null ? grabSpeedMultiplier : 1f;
+    public float grabRadius = 1.5f;
+    private NPCController grabbedNPC;
 
     [Header("Detection")]
     public bool isSprinting = false;  // Utilise le callback OnSprint pour voir s'il y a une entrée de sprint
@@ -59,7 +67,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public bool isGliding = false; //Si le joueur plane
     public bool isBoosting = false; //Si le joueur utilise le boost aérien
     public bool isCrashed = false;
-
+    private RaycastHit hit;
 
     [Header("References")]
     public CharacterController controller; // Référence au CharacterController du joueur
@@ -68,6 +76,11 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public LayerMask groundMask;
     public GameObject impactPrefab;
     public PlayerStats stats;
+    private Animator anim;
+    public GameObject armatureObject;
+    private Rigidbody hipsRb;
+    private Rigidbody[] ragdollRigidbodies;
+    private Collider[] ragdollColliders;
 
     [Header("Animation Settings")]
     public bool isLanding = false;
@@ -79,6 +92,11 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         //< > : précise le type de l'entrée
         controller = GetComponent<CharacterController>(); // GetComponent : hérité de MonoBehaviour 
         chargeJumpRate = maxChargeJump / chargeJumpTime;
+        anim = GetComponentInChildren<Animator>();
+        hipsRb = armatureObject.GetComponentInChildren<Rigidbody>();
+        ragdollColliders = armatureObject.GetComponentsInChildren<Collider>();
+        ragdollRigidbodies = armatureObject.GetComponentsInChildren<Rigidbody>();
+        SetRagdollState(false);
     }
 
     void OnMove(InputValue movementValue) // Callback appelé quand il y a une entrée de mouvement
@@ -94,6 +112,17 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         isSprinting = value.isPressed;
     }
 
+    void OnGrab(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            if (grabbedNPC == null)
+                TryGrab();
+            else
+                ReleaseGrab();
+        }
+    }
+
     void Update()
     {
         //Debug.Log("Velocity : " + velocity.magnitude + " | Stamina : " + currentStamina);
@@ -104,7 +133,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         movement = Vector3.ClampMagnitude(movement, 1f); // Empêche de dépasser une magnitude de 1 quand on bouge en diagonale
 
         //QUAND ON NE PEUT RIEN FAIRE (atterrissage, crash)
-        if (isLanding || isCrashed)
+        if (isLanding)
         {
             if (!controller.isGrounded) //soit on est en air time
                 velocity.y += gravity * Time.deltaTime;
@@ -115,15 +144,25 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
                 {
                     velocity.y = groundGravity;
                 }
-                else if (horizontalSpeed < 1f)
-                {
-                    isCrashed = false;
-                }
                 float dynamicDecel = deceleration / (1f + horizontalSpeed / maxSpeed);
                 velocity.x = Mathf.Lerp(velocity.x, 0f, dynamicDecel * Time.deltaTime);
                 velocity.z = Mathf.Lerp(velocity.z, 0f, dynamicDecel * Time.deltaTime);
             }
             controller.Move(velocity * Time.deltaTime);
+            ApplyVisualTilt();
+            return;
+        }
+        else if (isCrashed)
+        {
+            if (hipsGrounded)
+            {
+                hipsHorizontalSpeed = new Vector3(hipsRb.linearVelocity.x, 0f, hipsRb.linearVelocity.z).magnitude;
+                if (hipsHorizontalSpeed < 1f)
+                {
+                    isCrashed = false;
+                    SetRagdollState(false);
+                }
+            }
             ApplyVisualTilt();
             return;
         }
@@ -150,7 +189,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
                 boostDirectionHorizontal = Vector3.Scale(boostDirection, new Vector3(1, 0, 1)).normalized;
 
                 Vector3 actualDirection = Vector3.RotateTowards(velocity.normalized, boostDirection, boostRotationSpeed * Time.deltaTime, 0f);
-                float actualSpeed = Mathf.Lerp(velocity.magnitude, airBoostSpeed, airBoostAcceleration * Time.deltaTime);
+                float actualSpeed = Mathf.Lerp(velocity.magnitude, airBoostSpeed * speedMultiplier, airBoostAcceleration * Time.deltaTime);
                 velocity = actualDirection * actualSpeed;
                 
                 Quaternion targetRotation = Quaternion.LookRotation(boostDirectionHorizontal);
@@ -272,11 +311,11 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             {
                 targetPitch = brakePitchAngle;
             }
-            else if (isCrashed)
-            {
-                currentCrashPitch += crashTurnSpeed * Time.deltaTime;
-                targetPitch = currentCrashPitch;
-            }
+            // else if (isCrashed)
+            // {
+            //     currentCrashPitch += crashTurnSpeed * Time.deltaTime;
+            //     targetPitch = currentCrashPitch;
+            // }
 
             if (isGliding && horizontalSpeed > 10f)
             {
@@ -305,9 +344,67 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             isCrashed = true;
             isGliding = false;
             isBoosting = false;
+            SetRagdollState(true);
             Quaternion spawnRotation = Quaternion.LookRotation(-hit.normal);
             GameObject debris = Instantiate(impactPrefab, hit.point, spawnRotation);
         }
         //Debug.Log("Downard orientation : " + downwardOrientation + " | Speed : " + speed);
+    }
+
+    public void OnBoneCollision(Collision collision)
+    {
+        if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
+            hipsGrounded = true;
+        }
+    }
+
+    void TryGrab()
+    {
+        Collider[] hits = Physics.OverlapSphere(playerVisual.position, grabRadius);
+        foreach (Collider hit in hits)
+        {
+            NPCController npc = hit.GetComponentInParent<NPCController>();
+            if (npc != null && npc.isRagdoll && !npc.isGrabbed)
+            {
+                grabbedNPC = npc;
+                break;
+            }
+        }
+    }
+
+    void ReleaseGrab()
+    {
+        if (grabbedNPC == null) return;
+        grabbedNPC.Release();
+        grabbedNPC = null;
+    }
+
+    void SetRagdollState(bool state)
+    {
+        Debug.Log("set Ragdoll to " + state);
+        isRagdoll = state;
+        anim.enabled = !state;
+
+        if (!state)
+        {
+            if (Physics.Raycast(hipsRb.position + Vector3.up * 3f, Vector3.down, out hit, 10f, groundMask))
+                transform.position = hit.point + Vector3.up * 1.2f;
+            else
+                transform.position = hipsRb.position;
+        }
+
+        foreach (Rigidbody rb in ragdollRigidbodies)
+        {
+            rb.isKinematic = !state;
+        }
+        
+        foreach (Collider col in ragdollColliders)
+        {
+            col.enabled = state;
+            // col.gameObject.layer = state ? LayerMask.NameToLayer("PlayerRagdoll") : LayerMask.NameToLayer("Default");
+        }
+
+        controller.enabled = !state;
     }
 }

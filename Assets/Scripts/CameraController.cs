@@ -81,6 +81,8 @@ public class CameraController : MonoBehaviour
 
     void LateUpdate() //La caméra se déplace après que le joueur a bougé
     {
+        if (PauseController.isPaused) return;
+        
         Vector2 mouseDelta = Mouse.current.delta.ReadValue(); //déplacement de la souris par rapport à la dernière frame
 
         if (playerScript.isBoosting)

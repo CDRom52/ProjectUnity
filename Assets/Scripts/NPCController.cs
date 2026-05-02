@@ -1,15 +1,26 @@
 using UnityEngine;
-using UnityEngine.AI;
 
 public class NPCController : MonoBehaviour
 {
+    [Header("Movement")]
+    public float groundCheckDistance = 0.2f;
+    public bool isGrounded = true;
+    public LayerMask groundLayer;
+    private RaycastHit hit;
+
+
     [Header("Player Collision")]
-    private bool isRagdoll = false;
+    public bool isRagdoll = false;
     public float hitCoeff = 50f;
-    private float lastHitTime = -Mathf.Infinity;
     public float hitCooldown = 0.5f;
 
+    [Header("Grabbed by Player")]
+    public Transform npcHandBone;
+    private Rigidbody playerHand;
+    public bool isGrabbed = false;
+    private FixedJoint grabJoint;
 
+    
     [Header("References")]
     private Animator anim;
     private Rigidbody[] ragdollRigidbodies;
@@ -19,9 +30,7 @@ public class NPCController : MonoBehaviour
     private CharacterController playerController;
     private Rigidbody hipsRb;
     private Collider NPCCollider;
-
-
-    
+    public Rigidbody NPCRb;
 
     void Start()
     {
@@ -31,30 +40,42 @@ public class NPCController : MonoBehaviour
         ragdollRigidbodies = armatureObject.GetComponentsInChildren<Rigidbody>();
         hipsRb = armatureObject.GetComponentInChildren<Rigidbody>();
         NPCCollider = GetComponent<CapsuleCollider>();
+        NPCRb = GetComponent<Rigidbody>();
 
         foreach (Rigidbody rb in ragdollRigidbodies)
             rb.gameObject.AddComponent<RagdollBone>();
 
-        SetRagdollState(false);
+        SetRagdollState(true);
+    }
+
+    void Update()
+    {
+        
     }
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Trigger with: " + other.gameObject.name + " | Tag: " + other.tag);
         if (other.CompareTag("Player"))
         {
-            if (!isRagdoll)
-                SetRagdollState(true);
             PlayerPushReaction();
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
+            isGrounded = false;
+            SetRagdollState(true);
         }
     }
 
     public void OnBoneCollision(Collision collision)
     {
-        if (collision.collider.CompareTag("Player") && Time.time - lastHitTime > hitCooldown)
+        if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
-            Debug.Log("Ragdoll hit: " + collision.collider.gameObject.name);
-            lastHitTime = Time.time;
+            SetRagdollState(false);
+            isGrounded = true;
         }
     }
 
@@ -63,8 +84,18 @@ public class NPCController : MonoBehaviour
         isRagdoll = state;
         anim.enabled = !state;
 
+        if (!state)
+        {
+            if (Physics.Raycast(hipsRb.position + Vector3.up * 3f, Vector3.down, out hit, 10f, groundLayer))
+                transform.position = hit.point + Vector3.up * 1.2f;
+            else
+                transform.position = hipsRb.position;
+        }
+
         foreach (Rigidbody rb in ragdollRigidbodies)
+        {
             rb.isKinematic = !state;
+        }
         
         foreach (Collider col in ragdollColliders)
         {
@@ -79,5 +110,15 @@ public class NPCController : MonoBehaviour
     {
         Vector3 force = playerController.velocity * hitCoeff;
         hipsRb.AddForce(force, ForceMode.Impulse);
+    }
+
+    public void Grab(Rigidbody rightHandRb)
+    {
+        isGrabbed = true;
+    }
+
+    public void Release()
+    {
+        isGrabbed = false;
     }
 }

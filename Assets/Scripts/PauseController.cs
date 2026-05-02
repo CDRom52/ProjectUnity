@@ -8,7 +8,6 @@ public class PauseController : MonoBehaviour
     public GameObject pauseMenuUI;
     public GameObject optionsMenuUI;
 
-    // This function name should match your Action name (e.g., Action "Pause" -> OnPause)
     public void OnTogglePause(InputValue value)
     {
         if (isPaused)
