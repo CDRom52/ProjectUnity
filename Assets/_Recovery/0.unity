@@ -7421,7 +7421,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
@@ -11490,7 +11490,6 @@ MonoBehaviour:
   stallVelocity: 20
   airLiftVelocity: 40
   glideFollowSpeed: 4
-  lastVelocity: {x: 0, y: 0, z: 0}
   glideDrag: 0.5
   currentGlidePitch: 0
   glideTurnSpeed: 10
@@ -11580,6 +11579,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   player: {fileID: 2042177409}
+  playerScript: {fileID: 2042177410}
   stats: {fileID: 2042177416}
   groundMask:
     serializedVersion: 2
@@ -11600,7 +11600,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   boostParticles: {fileID: 618671493}
   player: {fileID: 0}
-  impactPrefab: {fileID: 4301815494506962267, guid: deb3cfb758fbe8b468e4a5744d047e2d, type: 3}
+  impactPrefab: {fileID: 0}
 --- !u!114 &2042177416
 MonoBehaviour:
   m_ObjectHideFlags: 0

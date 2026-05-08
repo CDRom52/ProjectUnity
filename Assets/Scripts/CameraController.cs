@@ -52,6 +52,8 @@ public class CameraController : MonoBehaviour
     [Header("References")]
     public Transform player;
     public PlayerController playerScript;
+    public Transform hipsRb;
+    private Transform ActiveTarget => (playerScript.isCrashed && hipsRb != null) ? hipsRb : player;
 
     void Awake()
     {
@@ -119,7 +121,7 @@ public class CameraController : MonoBehaviour
         HandleFOV();
         UpdateShakeOffset();
 
-        Vector3 headPosition = player.position + Vector3.up * height;
+        Vector3 headPosition = ActiveTarget.position + Vector3.up * height;
         Vector3 fullOffset = rotation * new Vector3(shoulderOffset, 0f, -distance);
         Vector3 desiredPosition = headPosition + fullOffset;
 

@@ -16,9 +16,7 @@ public class NPCController : MonoBehaviour
 
     [Header("Grabbed by Player")]
     public Transform npcHandBone;
-    private Rigidbody playerHand;
     public bool isGrabbed = false;
-    private FixedJoint grabJoint;
 
     
     [Header("References")]

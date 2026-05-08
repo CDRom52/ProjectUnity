@@ -10,8 +10,7 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
     [Header("References")]
     private Animator anim; // Référence à l'Animator
     private CharacterController controller; // Référence au CharacterController du joueur
-    public Transform player;
-    public PlayerController playerScript;
+    public PlayerController player;
     public PlayerStats stats;
     public LayerMask groundMask;
 
@@ -29,22 +28,23 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
     {
         anim = GetComponentInChildren<Animator>();
         controller = GetComponent<CharacterController>();
-        playerScript = player.GetComponent<PlayerController>();
+        player = GetComponent<PlayerController>();
     }
 
     
     void Update()
     {
         //QUAND ON NE PEUT RIEN FAIRE (atterrissage)
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Land"))
-        {
-            playerScript.isLanding = true;
-        }
-        else
-            playerScript.isLanding = false;
+        // if (anim.GetCurrentAnimatorStateInfo(0).IsName("Land"))
+        // {
+        //     playerScript.isLanding = true;
+        // }
+        // else
+        //     playerScript.isLanding = false;
 
         UpdateAnimations();
         HandleIdleTimer();
+        ApplyVisualTilt();
     }
 
     public float GetDistanceToGround()
@@ -58,10 +58,10 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
     }
     void UpdateAnimations()
     {
-        float horizontalSpeed = new Vector3(playerScript.velocity.x, 0f, playerScript.velocity.z).magnitude;
-        float verticalSpeed = playerScript.velocity.y;
-        float Speed = playerScript.velocity.magnitude;
-        bool isSprinting = playerScript.isSprinting;
+        float horizontalSpeed = new Vector3(player.velocity.x, 0f, player.velocity.z).magnitude;
+        float verticalSpeed = player.velocity.y;
+        float Speed = player.velocity.magnitude;
+        bool isSprinting = player.isSprinting;
         if (!controller.isGrounded)
         {
             float currentHeight = GetDistanceToGround();
@@ -72,17 +72,17 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
         anim.SetFloat("VerticalSpeed", verticalSpeed);
         anim.SetFloat("Speed", Speed);
         anim.SetBool("IsGrounded", controller.isGrounded);
-        anim.SetBool("IsGliding", playerScript.isGliding);
-        anim.SetBool("IsBoosting", playerScript.isBoosting);
-        anim.SetBool("IsSprinting", playerScript.isSprinting);
-        anim.SetBool("IsCrashed", playerScript.isCrashed);
-        anim.SetBool("IsBraking", playerScript.isBraking);
+        anim.SetBool("IsGliding", player.isGliding);
+        anim.SetBool("IsBoosting", player.isBoosting);
+        anim.SetBool("IsSprinting", player.isSprinting);
+        anim.SetBool("IsCrashed", player.isCrashed);
+        anim.SetBool("IsBraking", player.isBraking);
         anim.SetBool("CanJump", stats.canJump);
     }
 
     void HandleIdleTimer()
     {
-        if (playerScript.movementX == 0 && playerScript.movementY == 0 && controller.isGrounded)
+        if (player.movementX == 0 && player.movementY == 0 && controller.isGrounded)
         {
             idleTimer += Time.deltaTime;
 
@@ -96,5 +96,39 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
             idleTimer = 0f;
             anim.SetBool("IsBored", false);
         }
+    }
+
+    void ApplyVisualTilt() //Tilt visuel (ne change pas l'ange de rotation en Y sur le characterController)
+    {
+        float targetPitch = 0f; //tangage (selon X)
+        float targetRoll = 0f; //roulis (selon Z)
+        
+        if (!controller.isGrounded)
+        {
+            float horizontalSpeed = new Vector3(player.velocity.x, 0f, player.velocity.z).magnitude;
+
+            if (player.isGliding || player.isBoosting)
+            {
+                float flyRatio = Vector3.Dot(player.velocity.normalized, Vector3.up); //à quel point on pointe vers le haut (-1 à 1)
+                targetPitch = -flyRatio * player.flyPitchAngle;
+            }
+            else if (player.isBraking)
+            {
+                targetPitch = player.brakePitchAngle;
+            }
+
+            if (player.isGliding && horizontalSpeed > 10f)
+            {
+                Vector3 currentDir = player.velocity.normalized;
+                Vector3 lastDir = player.lastVelocity.normalized;
+                Vector3 turnAxis = Vector3.Cross(lastDir, currentDir);
+                float turnSpeed = turnAxis.y / Time.deltaTime;
+                targetRoll = -turnSpeed * player.flyRollAngle;
+            }
+        }
+        player.lastVelocity = player.velocity;
+
+        Quaternion targetRotation = Quaternion.Euler(targetPitch, 0f, targetRoll);
+        player.playerVisual.localRotation = Quaternion.Slerp(player.playerVisual.localRotation, targetRotation, player.tiltSpeed * Time.deltaTime);
     }
 }

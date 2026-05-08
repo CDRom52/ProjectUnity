@@ -36,19 +36,15 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public float stallVelocity = 5f;
     public float airLiftVelocity = 190f;
     public float glideFollowSpeed = 4f;
-    private Vector3 lastVelocity;
+    public Vector3 lastVelocity;
     public float glideDrag = 0.5f;
     public float currentGlidePitch = 0f;
     public float glideTurnSpeed = 10f;
 
     [Header("Crashing")]
-    public bool isRagdoll = false;
-    public bool hipsGrounded = false;
-    public float hipsHorizontalSpeed;
     public float crashPitchAngle = 40f;
     public float crashTurnSpeed = 10f;
     public float currentCrashPitch = 0f;
-    public float bounciness = 0.5f;
     public float groundHitSpeed = 100f;
 
     [Header("Braking")]
@@ -67,20 +63,15 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public bool isGliding = false; //Si le joueur plane
     public bool isBoosting = false; //Si le joueur utilise le boost aérien
     public bool isCrashed = false;
-    private RaycastHit hit;
 
     [Header("References")]
     public CharacterController controller; // Référence au CharacterController du joueur
     public Transform playerVisual; // Référence au Transform du modèle 3D du joueur
     public Transform cameraTransform; // Référence au Transform de la caméra : objet lié à la position, rotation, échelle, ...
-    public LayerMask groundMask;
-    public GameObject impactPrefab;
     public PlayerStats stats;
     private Animator anim;
-    public GameObject armatureObject;
-    private Rigidbody hipsRb;
-    private Rigidbody[] ragdollRigidbodies;
-    private Collider[] ragdollColliders;
+    private RagdollController ragdoll;
+    private PlayerEffects effects;
 
     [Header("Animation Settings")]
     public bool isLanding = false;
@@ -93,10 +84,8 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         controller = GetComponent<CharacterController>(); // GetComponent : hérité de MonoBehaviour 
         chargeJumpRate = maxChargeJump / chargeJumpTime;
         anim = GetComponentInChildren<Animator>();
-        hipsRb = armatureObject.GetComponentInChildren<Rigidbody>();
-        ragdollColliders = armatureObject.GetComponentsInChildren<Collider>();
-        ragdollRigidbodies = armatureObject.GetComponentsInChildren<Rigidbody>();
-        SetRagdollState(false);
+        ragdoll = GetComponent<RagdollController>();
+        effects = GetComponent<PlayerEffects>();
     }
 
     void OnMove(InputValue movementValue) // Callback appelé quand il y a une entrée de mouvement
@@ -125,6 +114,10 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
     void Update()
     {
+        if (ragdoll.isRagdoll)
+        {
+            return;
+        }
         //Debug.Log("Velocity : " + velocity.magnitude + " | Stamina : " + currentStamina);
         // Crée un repère sur le plan horizontal, par rapport à la caméra
         Vector3 cameraForward = Vector3.Scale(cameraTransform.forward, new Vector3(1, 0, 1)).normalized;
@@ -133,39 +126,40 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         movement = Vector3.ClampMagnitude(movement, 1f); // Empêche de dépasser une magnitude de 1 quand on bouge en diagonale
 
         //QUAND ON NE PEUT RIEN FAIRE (atterrissage, crash)
-        if (isLanding)
-        {
-            if (!controller.isGrounded) //soit on est en air time
-                velocity.y += gravity * Time.deltaTime;
-            else if (velocity.y < 0) //soit on est au sol, ou on vient de toucher le sol
-            {
-                float horizontalSpeed = new Vector3(velocity.x, 0f, velocity.z).magnitude;
-                if (!isCrashed)
-                {
-                    velocity.y = groundGravity;
-                }
-                float dynamicDecel = deceleration / (1f + horizontalSpeed / maxSpeed);
-                velocity.x = Mathf.Lerp(velocity.x, 0f, dynamicDecel * Time.deltaTime);
-                velocity.z = Mathf.Lerp(velocity.z, 0f, dynamicDecel * Time.deltaTime);
-            }
-            controller.Move(velocity * Time.deltaTime);
-            ApplyVisualTilt();
-            return;
-        }
-        else if (isCrashed)
-        {
-            if (hipsGrounded)
-            {
-                hipsHorizontalSpeed = new Vector3(hipsRb.linearVelocity.x, 0f, hipsRb.linearVelocity.z).magnitude;
-                if (hipsHorizontalSpeed < 1f)
-                {
-                    isCrashed = false;
-                    SetRagdollState(false);
-                }
-            }
-            ApplyVisualTilt();
-            return;
-        }
+        // if (isLanding)
+        // {
+        //     if (!controller.isGrounded) //soit on est en air time
+        //         velocity.y += gravity * Time.deltaTime;
+        //     else if (velocity.y < 0) //soit on est au sol, ou on vient de toucher le sol
+        //     {
+        //         float horizontalSpeed = new Vector3(velocity.x, 0f, velocity.z).magnitude;
+        //         if (!isCrashed)
+        //         {
+        //             velocity.y = groundGravity;
+        //         }
+        //         float dynamicDecel = deceleration / (1f + horizontalSpeed / maxSpeed);
+        //         velocity.x = Mathf.Lerp(velocity.x, 0f, dynamicDecel * Time.deltaTime);
+        //         velocity.z = Mathf.Lerp(velocity.z, 0f, dynamicDecel * Time.deltaTime);
+        //     }
+        //     controller.Move(velocity * Time.deltaTime);
+        //     ApplyVisualTilt();
+        //     return;
+        // }
+        // else if (isCrashed)
+        // {
+        //     if (hipsGrounded)
+        //     {
+        //         hipsHorizontalSpeed = new Vector3(hipsRb.linearVelocity.x, 0f, hipsRb.linearVelocity.z).magnitude;
+        //         if (hipsHorizontalSpeed < 1f)
+        //         {
+        //             isCrashed = false;
+        //             isLanding = true;
+        //             // SetRagdollState(false);
+        //         }
+        //     }
+        //     ApplyVisualTilt();
+        //     return;
+        // }
 
         //ACTIONS QUI COÛTENT DE LA STAMINA (super jump, boost)
         if (isSprinting) //soit on sprint
@@ -287,75 +281,22 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             if (movementY <= 0 || newSpeed < stallVelocity || !stats.canFly) isGliding = false;
         }
 
-
-        ApplyVisualTilt();
-
         controller.Move(velocity * Time.deltaTime); //Déplacement final
     }
 
-    void ApplyVisualTilt() //Tilt visuel (ne change pas l'ange de rotation en Y sur le characterController)
-    {
-        float targetPitch = 0f; //tangage (selon X)
-        float targetRoll = 0f; //roulis (selon Z)
-        
-        if (!controller.isGrounded)
-        {
-            float horizontalSpeed = new Vector3(velocity.x, 0f, velocity.z).magnitude;
-
-            if (isGliding || isBoosting)
-            {
-                float flyRatio = Vector3.Dot(velocity.normalized, Vector3.up); //à quel point on pointe vers le haut (-1 à 1)
-                targetPitch = -flyRatio * flyPitchAngle;
-            }
-            else if (isBraking)
-            {
-                targetPitch = brakePitchAngle;
-            }
-            // else if (isCrashed)
-            // {
-            //     currentCrashPitch += crashTurnSpeed * Time.deltaTime;
-            //     targetPitch = currentCrashPitch;
-            // }
-
-            if (isGliding && horizontalSpeed > 10f)
-            {
-                Vector3 currentDir = velocity.normalized;
-                Vector3 lastDir = lastVelocity.normalized;
-                Vector3 turnAxis = Vector3.Cross(lastDir, currentDir);
-                float turnSpeed = turnAxis.y / Time.deltaTime;
-                targetRoll = -turnSpeed * flyRollAngle;
-            }
-        }
-        lastVelocity = velocity;
-
-        Quaternion targetRotation = Quaternion.Euler(targetPitch, 0f, targetRoll);
-        playerVisual.localRotation = Quaternion.Slerp(playerVisual.localRotation, targetRotation, tiltSpeed * Time.deltaTime);
-    }
+    
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         float speed = velocity.magnitude;
         float downwardOrientation = Vector3.Dot(velocity.normalized, Vector3.down);
-        //float impactRatio = Vector3.Dot(velocity.normalized, -hit.normal); //A quel point on rentre directement dans la direction de la surface
         if (speed > groundHitSpeed && downwardOrientation < 1) //Si on va assez vite (pas pour un atterrisage normal) et que on ne va pas directement vers le bas
         {
-            Vector3 bounceDirection = Vector3.Reflect(velocity, hit.normal);
-            velocity = bounceDirection * bounciness;
             isCrashed = true;
             isGliding = false;
             isBoosting = false;
-            SetRagdollState(true);
-            Quaternion spawnRotation = Quaternion.LookRotation(-hit.normal);
-            GameObject debris = Instantiate(impactPrefab, hit.point, spawnRotation);
-        }
-        //Debug.Log("Downard orientation : " + downwardOrientation + " | Speed : " + speed);
-    }
-
-    public void OnBoneCollision(Collision collision)
-    {
-        if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Ground"))
-        {
-            hipsGrounded = true;
+            ragdoll.HandleCollision(hit);
+            effects.HandleCollision(hit);
         }
     }
 
@@ -378,33 +319,5 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         if (grabbedNPC == null) return;
         grabbedNPC.Release();
         grabbedNPC = null;
-    }
-
-    void SetRagdollState(bool state)
-    {
-        Debug.Log("set Ragdoll to " + state);
-        isRagdoll = state;
-        anim.enabled = !state;
-
-        if (!state)
-        {
-            if (Physics.Raycast(hipsRb.position + Vector3.up * 3f, Vector3.down, out hit, 10f, groundMask))
-                transform.position = hit.point + Vector3.up * 1.2f;
-            else
-                transform.position = hipsRb.position;
-        }
-
-        foreach (Rigidbody rb in ragdollRigidbodies)
-        {
-            rb.isKinematic = !state;
-        }
-        
-        foreach (Collider col in ragdollColliders)
-        {
-            col.enabled = state;
-            // col.gameObject.layer = state ? LayerMask.NameToLayer("PlayerRagdoll") : LayerMask.NameToLayer("Default");
-        }
-
-        controller.enabled = !state;
     }
 }

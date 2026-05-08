@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class RagdollBone : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class RagdollBone : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        if (npc == null) return;
         npc.OnBoneCollision(collision);
     }
 }
