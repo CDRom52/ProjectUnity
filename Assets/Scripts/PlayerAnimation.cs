@@ -35,12 +35,12 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
     void Update()
     {
         //QUAND ON NE PEUT RIEN FAIRE (atterrissage)
-        // if (anim.GetCurrentAnimatorStateInfo(0).IsName("Land"))
-        // {
-        //     playerScript.isLanding = true;
-        // }
-        // else
-        //     playerScript.isLanding = false;
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Land") || anim.GetCurrentAnimatorStateInfo(0).IsName("GetUp"))
+        {
+            player.animationPause = true;
+        }
+        else
+            player.animationPause = false;
 
         UpdateAnimations();
         HandleIdleTimer();
@@ -78,6 +78,7 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
         anim.SetBool("IsCrashed", player.isCrashed);
         anim.SetBool("IsBraking", player.isBraking);
         anim.SetBool("CanJump", stats.canJump);
+        anim.SetBool("HasCrashed", player.hasCrashed);
     }
 
     void HandleIdleTimer()

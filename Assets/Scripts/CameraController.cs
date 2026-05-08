@@ -53,7 +53,7 @@ public class CameraController : MonoBehaviour
     public Transform player;
     public PlayerController playerScript;
     public Transform hipsRb;
-    private Transform ActiveTarget => (playerScript.isCrashed && hipsRb != null) ? hipsRb : player;
+    private Transform ActiveTarget;
 
     void Awake()
     {
@@ -62,6 +62,7 @@ public class CameraController : MonoBehaviour
         playerScript = player.GetComponent<PlayerController>();
         speedVolume.profile.TryGet(out chromatic);
         speedVolume.profile.TryGet(out lensDist);
+        ActiveTarget = player;
     }
 
     void Update()

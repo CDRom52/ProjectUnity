@@ -22,6 +22,8 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public float chargeJumpTime = 2f; // Temps de charge du jump
     public float maxChargeJump = 20f; // Vitesse de jump maximale
     public float currentChargeJump = 0f;
+    public float speedMultiplier;
+
     
     [Header("Air Boost")]
     public float boostRotationSpeed = 5f;
@@ -46,16 +48,14 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public float crashTurnSpeed = 10f;
     public float currentCrashPitch = 0f;
     public float groundHitSpeed = 100f;
+    public float bounciness = 0.5f;
+    public bool hasCrashed;
+    private float getUpTimerDuration = 1f;
+    private float getUpTimer;
 
     [Header("Braking")]
     public float brakeDrag = 50f;
     public float brakePitchAngle = 40f;
-
-    [Header("Grabbing NPC")]
-    public float grabSpeedMultiplier = 0.3f;
-    float speedMultiplier => grabbedNPC != null ? grabSpeedMultiplier : 1f;
-    public float grabRadius = 1.5f;
-    private NPCController grabbedNPC;
 
     [Header("Detection")]
     public bool isSprinting = false;  // Utilise le callback OnSprint pour voir s'il y a une entrée de sprint
@@ -72,9 +72,10 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     private Animator anim;
     private RagdollController ragdoll;
     private PlayerEffects effects;
+    private PlayerGrab grab;
 
     [Header("Animation Settings")]
-    public bool isLanding = false;
+    public bool animationPause = false;
 
 
     //void : fonction qui ne renvoie rien
@@ -86,6 +87,8 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         anim = GetComponentInChildren<Animator>();
         ragdoll = GetComponent<RagdollController>();
         effects = GetComponent<PlayerEffects>();
+        grab = GetComponent<PlayerGrab>();
+        getUpTimer = getUpTimerDuration;
     }
 
     void OnMove(InputValue movementValue) // Callback appelé quand il y a une entrée de mouvement
@@ -105,18 +108,15 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     {
         if (value.isPressed)
         {
-            if (grabbedNPC == null)
-                TryGrab();
-            else
-                ReleaseGrab();
+            grab.OnGrab();
         }
     }
 
     void Update()
     {
-        if (ragdoll.isRagdoll)
+        if (!controller.isGrounded && !isCrashed)
         {
-            return;
+            hasCrashed = false;
         }
         //Debug.Log("Velocity : " + velocity.magnitude + " | Stamina : " + currentStamina);
         // Crée un repère sur le plan horizontal, par rapport à la caméra
@@ -126,41 +126,48 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         movement = Vector3.ClampMagnitude(movement, 1f); // Empêche de dépasser une magnitude de 1 quand on bouge en diagonale
 
         //QUAND ON NE PEUT RIEN FAIRE (atterrissage, crash)
-        // if (isLanding)
-        // {
-        //     if (!controller.isGrounded) //soit on est en air time
-        //         velocity.y += gravity * Time.deltaTime;
-        //     else if (velocity.y < 0) //soit on est au sol, ou on vient de toucher le sol
-        //     {
-        //         float horizontalSpeed = new Vector3(velocity.x, 0f, velocity.z).magnitude;
-        //         if (!isCrashed)
-        //         {
-        //             velocity.y = groundGravity;
-        //         }
-        //         float dynamicDecel = deceleration / (1f + horizontalSpeed / maxSpeed);
-        //         velocity.x = Mathf.Lerp(velocity.x, 0f, dynamicDecel * Time.deltaTime);
-        //         velocity.z = Mathf.Lerp(velocity.z, 0f, dynamicDecel * Time.deltaTime);
-        //     }
-        //     controller.Move(velocity * Time.deltaTime);
-        //     ApplyVisualTilt();
-        //     return;
-        // }
-        // else if (isCrashed)
-        // {
-        //     if (hipsGrounded)
-        //     {
-        //         hipsHorizontalSpeed = new Vector3(hipsRb.linearVelocity.x, 0f, hipsRb.linearVelocity.z).magnitude;
-        //         if (hipsHorizontalSpeed < 1f)
-        //         {
-        //             isCrashed = false;
-        //             isLanding = true;
-        //             // SetRagdollState(false);
-        //         }
-        //     }
-        //     ApplyVisualTilt();
-        //     return;
-        // }
-
+        if (animationPause) //pour les animations
+        {
+            if (!controller.isGrounded) //soit on est en air time
+                velocity.y += gravity * Time.deltaTime;
+            else if (velocity.y < 0) //soit on est au sol, ou on vient de toucher le sol
+            {
+                velocity.y = groundGravity * Time.deltaTime;
+                float horizontalSpeed = new Vector3(velocity.x, 0f, velocity.z).magnitude;
+                float dynamicDecel = deceleration / (1f + horizontalSpeed / maxSpeed);
+                velocity.x = Mathf.Lerp(velocity.x, 0f, dynamicDecel * Time.deltaTime);
+                velocity.z = Mathf.Lerp(velocity.z, 0f, dynamicDecel * Time.deltaTime);
+            }
+            controller.Move(velocity * Time.deltaTime);
+            return;
+        }
+        else if (isCrashed)
+        {
+            if (!controller.isGrounded) //soit on est en air time
+                velocity.y += gravity * Time.deltaTime;
+            else if (velocity.y < 0) //soit on est au sol, ou on vient de toucher le sol
+            {
+                float horizontalSpeed = new Vector3(velocity.x, 0f, velocity.z).magnitude;
+                if (horizontalSpeed < 0.1f)
+                {
+                    getUpTimer -= Time.deltaTime;
+                    ragdoll.Free();
+                    if (getUpTimer <= 0f)
+                    {
+                        getUpTimer = getUpTimerDuration;
+                        isCrashed = false;
+                        hasCrashed = true;
+                        ragdoll.Land();
+                    }
+                }
+                float dynamicDecel = deceleration / (1f + horizontalSpeed / maxSpeed);
+                velocity.x = Mathf.Lerp(velocity.x, 0f, dynamicDecel * Time.deltaTime);
+                velocity.z = Mathf.Lerp(velocity.z, 0f, dynamicDecel * Time.deltaTime);
+            }
+            controller.Move(velocity * Time.deltaTime);
+            return;
+        }
+        
         //ACTIONS QUI COÛTENT DE LA STAMINA (super jump, boost)
         if (isSprinting) //soit on sprint
         {
@@ -292,32 +299,13 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         float downwardOrientation = Vector3.Dot(velocity.normalized, Vector3.down);
         if (speed > groundHitSpeed && downwardOrientation < 1) //Si on va assez vite (pas pour un atterrisage normal) et que on ne va pas directement vers le bas
         {
+            Vector3 bounceDirection = Vector3.Reflect(velocity, hit.normal);
             isCrashed = true;
             isGliding = false;
             isBoosting = false;
+            velocity = bounceDirection * bounciness;
             ragdoll.HandleCollision(hit);
             effects.HandleCollision(hit);
         }
-    }
-
-    void TryGrab()
-    {
-        Collider[] hits = Physics.OverlapSphere(playerVisual.position, grabRadius);
-        foreach (Collider hit in hits)
-        {
-            NPCController npc = hit.GetComponentInParent<NPCController>();
-            if (npc != null && npc.isRagdoll && !npc.isGrabbed)
-            {
-                grabbedNPC = npc;
-                break;
-            }
-        }
-    }
-
-    void ReleaseGrab()
-    {
-        if (grabbedNPC == null) return;
-        grabbedNPC.Release();
-        grabbedNPC = null;
     }
 }
