@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Unity.Multiplayer.Center.Common.Analytics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -59,6 +60,9 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public float brakeDrag = 50f;
     public float brakePitchAngle = 40f;
 
+    [Header("Interaction")]
+    public bool isBusy = false;
+
     [Header("Detection")]
     public bool isSprinting = false;  // Utilise le callback OnSprint pour voir s'il y a une entrée de sprint
     public bool isBraking = false; // Utilise le callback OnBrake pour voir s'il y a une entrée de freinage
@@ -74,7 +78,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     private Animator anim;
     private RagdollController ragdoll;
     private PlayerEffects effects;
-    private PlayerGrab grab;
+    private PlayerInteraction interaction;
 
     [Header("Animation Settings")]
     public bool animationPause = false;
@@ -89,7 +93,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         anim = GetComponentInChildren<Animator>();
         ragdoll = GetComponent<RagdollController>();
         effects = GetComponent<PlayerEffects>();
-        grab = GetComponent<PlayerGrab>();
+        interaction = GetComponent<PlayerInteraction>();
         getUpTimer = getUpTimerDuration;
     }
 
@@ -106,11 +110,20 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         isSprinting = value.isPressed;
     }
 
-    void OnGrab(InputValue value)
+    void OnCamp(InputValue value)
     {
         if (value.isPressed)
         {
-            grab.OnGrab();
+            interaction.OnCamp();
+        }
+    }
+
+    void OnInteract(InputValue value)
+    {
+        Debug.Log("SLEEP");
+        if (value.isPressed)
+        {
+            interaction.OnInteract();
         }
     }
 
@@ -128,7 +141,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         movement = Vector3.ClampMagnitude(movement, 1f); // Empêche de dépasser une magnitude de 1 quand on bouge en diagonale
 
         //QUAND ON NE PEUT RIEN FAIRE (atterrissage, crash)
-        if (animationPause) //pour les animations
+        if (animationPause || isBusy) //pour les animations
         {
             if (!controller.isGrounded) //soit on est en air time
                 velocity.y += gravity * Time.deltaTime;
@@ -307,7 +320,8 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             isBoosting = false;
             velocity = bounceDirection * bounciness;
             ragdoll.HandleCollision(hit);
-            effects.HandleCollision(hit);
+            if (hit.gameObject.layer == 6)
+                effects.HandleCollision(hit);
         }
     }
 }

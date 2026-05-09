@@ -28,7 +28,7 @@
                     "name": "Attack",
                     "type": "Button",
                     "id": "6c2ab1b8-8984-453a-af3d-a3c78ae1679a",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -37,7 +37,7 @@
                     "name": "Interact",
                     "type": "Button",
                     "id": "852140f2-7766-474d-8707-702459ba45f3",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "Hold",
                     "initialStateCheck": false
@@ -46,7 +46,7 @@
                     "name": "Crouch",
                     "type": "Button",
                     "id": "27c5f898-bc57-4ee1-8800-db469aca5fe3",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -88,9 +88,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Grab",
+                    "name": "Camp",
                     "type": "Button",
-                    "id": "fa637a41-8acd-43d9-9597-6b71134608c0",
+                    "id": "c05b8c51-dcb6-4751-8a6b-16ed8f9514d9",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -485,12 +485,12 @@
                 },
                 {
                     "name": "",
-                    "id": "0dc78a27-182d-437c-b21a-1ec8e2644894",
-                    "path": "<Keyboard>/e",
+                    "id": "630463fb-775f-4fea-875c-850a9428a9be",
+                    "path": "<Keyboard>/c",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Grab",
+                    "action": "Camp",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

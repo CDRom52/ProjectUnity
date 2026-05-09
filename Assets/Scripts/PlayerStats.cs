@@ -95,4 +95,10 @@ public class PlayerStats : MonoBehaviour
     {
         currentStamina -= staminaJumpCost * (playerScript.currentChargeJump / playerScript.maxChargeJump);
     }
+
+    public void Sleep()
+    {
+        currentEnergy = maxEnergy;
+        currentHealth = maxHealth;
+    }
 }
