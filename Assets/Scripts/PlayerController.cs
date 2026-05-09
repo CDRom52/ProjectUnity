@@ -42,6 +42,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public float glideDrag = 0.5f;
     public float currentGlidePitch = 0f;
     public float glideTurnSpeed = 10f;
+    public float turnSpeed;
 
     [Header("Crashing")]
     public float crashPitchAngle = 40f;
@@ -52,6 +53,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public bool hasCrashed;
     private float getUpTimerDuration = 1f;
     private float getUpTimer;
+    public bool getUpBack;
 
     [Header("Braking")]
     public float brakeDrag = 50f;
@@ -151,10 +153,10 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
                 if (horizontalSpeed < 0.1f)
                 {
                     getUpTimer -= Time.deltaTime;
-                    ragdoll.Free();
                     if (getUpTimer <= 0f)
                     {
                         getUpTimer = getUpTimerDuration;
+                        getUpBack = ragdoll.UpBack();
                         isCrashed = false;
                         hasCrashed = true;
                         ragdoll.Land();

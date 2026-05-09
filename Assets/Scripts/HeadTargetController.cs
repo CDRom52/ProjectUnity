@@ -1,45 +1,40 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations.Rigging; // Required to access the Weight property
 
 public class HeadTargetController : MonoBehaviour
 {
+    [Header("References")]
+    public PlayerController playerScript;
     public Transform cam;
     public Transform playerTransform;
-    public MultiAimConstraint headConstraint; // Drag your 'HeadAim' object here
-    
-    // --- NEW STUFF ---
-    [Header("Player Reference")]
-    public PlayerController playerScript;
+    public MultiAimConstraint headConstraint;
     
     [Header("Settings")]
     public float distance = 15f;
     public float smoothTime = 0.15f;
     public float fadeSpeed = 5f; // How fast the head stops/starts turning
+    public float headWeightChangeSpeed = 4f;
 
-    private Vector3 _currentVelocity = Vector3.zero;
-    private bool _wasLookingLastFrame;
+    private Vector3 currentVelocity = Vector3.zero;
+    private bool wasLookingLastFrame;
 
     void LateUpdate()
     {
-        if (cam == null || playerTransform == null || headConstraint == null || playerScript == null) return;
-
         bool canLook = !(playerScript.isBoosting || playerScript.isCrashed || (!playerScript.controller.isGrounded && !playerScript.isBoosting && !playerScript.isGliding));
 
         
-        // --- THE FIX ---
-        if (canLook && !_wasLookingLastFrame)
+        if (canLook && !wasLookingLastFrame)
         {
-            // Teleport the target instantly to the front of the camera 
-            // so the 'SmoothDamp' doesn't have to travel from an old position.
             transform.position = cam.position + (cam.forward * distance);
-            _currentVelocity = Vector3.zero; // Reset velocity to prevent 'rebound'
+            currentVelocity = Vector3.zero;
         }
-        _wasLookingLastFrame = canLook;
-        // ----------------
+        wasLookingLastFrame = canLook;
 
         float targetWeight = canLook ? 1f : 0f;
-        // Use a slightly slower lerp for the weight (3f or 4f) for a more organic feel
-        headConstraint.weight = Mathf.Lerp(headConstraint.weight, targetWeight, Time.deltaTime * 4f);
+        if (playerScript.isGliding &&  Mathf.Abs(playerScript.turnSpeed) > 1f)
+            targetWeight = 0.2f;
+        headConstraint.weight = Mathf.Lerp(headConstraint.weight, targetWeight, Time.deltaTime * headWeightChangeSpeed);
 
         if (headConstraint.weight > 0.01f)
         {
@@ -54,7 +49,7 @@ public class HeadTargetController : MonoBehaviour
             }
 
             Vector3 targetPos = cam.position + (camDir * distance);
-            transform.position = Vector3.SmoothDamp(transform.position, targetPos, ref _currentVelocity, smoothTime);
+            transform.position = Vector3.SmoothDamp(transform.position, targetPos, ref currentVelocity, smoothTime);
         }
     }
 }

@@ -7,6 +7,7 @@ public class RagdollController : MonoBehaviour
     public bool isRagdoll = false;
     public bool hipsGrounded = false;
     public float hipsHorizontalSpeed;
+    private bool upBack;
 
     [Header("References")]
     public PlayerController player;
@@ -14,6 +15,7 @@ public class RagdollController : MonoBehaviour
     public LayerMask groundMask;
     public CharacterController controller;
     private Rigidbody hipsRb;
+    public Rigidbody chestRb;
     private Rigidbody playerRb;
     private Rigidbody[] ragdollRigidbodies;
     private Collider[] ragdollColliders;
@@ -71,20 +73,17 @@ public class RagdollController : MonoBehaviour
             col.enabled = state;
         }
 
-        // if (state)
-        // {
-        //     bodyJoint = hipsRb.gameObject.AddComponent<SpringJoint>();
-        //     bodyJoint.connectedBody = playerRb;
-        //     bodyJoint.spring = 200f;
-        // }
+        if (!state)
+        {
+            upBack = !(Vector3.Dot(headRb.transform.up, Vector3.up) > 0f);
+            Vector3 flatForward = Vector3.ProjectOnPlane(headRb.transform.forward, Vector3.up);
+            if (flatForward.sqrMagnitude < 0.01f) return;
+            transform.rotation = Quaternion.LookRotation(flatForward, Vector3.up);
+        }
     }
 
-    public void Free()
+    public bool UpBack()
     {
-        // if (bodyJoint)
-        // {
-        //     Destroy(bodyJoint);
-        //     bodyJoint = null;
-        // }
+        return upBack;
     }
 }

@@ -35,7 +35,7 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
     void Update()
     {
         //QUAND ON NE PEUT RIEN FAIRE (atterrissage)
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Land") || anim.GetCurrentAnimatorStateInfo(0).IsName("GetUp"))
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Land") || anim.GetCurrentAnimatorStateInfo(0).IsName("GetUpBack")|| anim.GetCurrentAnimatorStateInfo(0).IsName("GetUpFront"))
         {
             player.animationPause = true;
         }
@@ -61,7 +61,6 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
         float horizontalSpeed = new Vector3(player.velocity.x, 0f, player.velocity.z).magnitude;
         float verticalSpeed = player.velocity.y;
         float Speed = player.velocity.magnitude;
-        bool isSprinting = player.isSprinting;
         if (!controller.isGrounded)
         {
             float currentHeight = GetDistanceToGround();
@@ -79,6 +78,7 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
         anim.SetBool("IsBraking", player.isBraking);
         anim.SetBool("CanJump", stats.canJump);
         anim.SetBool("HasCrashed", player.hasCrashed);
+        anim.SetBool("GetUpBack", player.getUpBack);
     }
 
     void HandleIdleTimer()
@@ -123,8 +123,8 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
                 Vector3 currentDir = player.velocity.normalized;
                 Vector3 lastDir = player.lastVelocity.normalized;
                 Vector3 turnAxis = Vector3.Cross(lastDir, currentDir);
-                float turnSpeed = turnAxis.y / Time.deltaTime;
-                targetRoll = -turnSpeed * player.flyRollAngle;
+                player.turnSpeed = turnAxis.y / Time.deltaTime;
+                targetRoll = -player.turnSpeed * player.flyRollAngle;
             }
         }
         player.lastVelocity = player.velocity;
