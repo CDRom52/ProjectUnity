@@ -13,6 +13,7 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
     public PlayerController player;
     public PlayerStats stats;
     public LayerMask groundMask;
+    public GameObject backpackPrefab;
 
     [Header("Idle Settings")]
     public float idleBreakDelay = 10f;
@@ -20,6 +21,11 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
 
     [Header("Fall Settings")]
     public float maxRayDistance = 50f;
+
+    [Header("Backpack")]
+    private GameObject backpack;
+    public Transform chest;
+    private Vector3 backpackPosition = new Vector3(0, 0, -0.4f);
 
 
 
@@ -29,6 +35,7 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
         anim = GetComponentInChildren<Animator>();
         controller = GetComponent<CharacterController>();
         player = GetComponent<PlayerController>();
+        CreateBackpack();
     }
 
     
@@ -131,5 +138,25 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
 
         Quaternion targetRotation = Quaternion.Euler(targetPitch, 0f, targetRoll);
         player.playerVisual.localRotation = Quaternion.Slerp(player.playerVisual.localRotation, targetRotation, player.tiltSpeed * Time.deltaTime);
+    }
+
+    public void SetCamp(bool set)
+    {
+        if (!set && backpack == null)
+        {
+            CreateBackpack();
+        }
+        else if (set && backpack)
+        {
+            Destroy(backpack);
+        }
+    }
+
+    void CreateBackpack()
+    {
+        backpack = Instantiate(backpackPrefab);
+        backpack.transform.SetParent(chest);
+        backpack.transform.localPosition = backpackPosition;
+        backpack.transform.localRotation = Quaternion.identity;
     }
 }
