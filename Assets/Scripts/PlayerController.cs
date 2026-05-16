@@ -302,7 +302,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
             if (movementY <= 0 || newSpeed < stallVelocity || !stats.canFly) isGliding = false;
         }
-
+        velocity = Vector3.ClampMagnitude(velocity, airBoostSpeed);
         controller.Move(velocity * Time.deltaTime); //Déplacement final
     }
 
