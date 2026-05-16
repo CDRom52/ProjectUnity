@@ -72,36 +72,42 @@ public class PlayerInteraction : MonoBehaviour
 
     public void OnCamp()
     {
-        if (camp != null)
+        if (player.controller.isGrounded && !player.isCrashed)
         {
-            float distanceToCamp = Vector3.Distance(transform.position, camp.transform.position);
-            if (distanceToCamp > maxDistanceToCamp) 
+            if (camp != null)
             {
-                Debug.Log("Too far from camp to sleep!");
+                float distanceToCamp = Vector3.Distance(transform.position, camp.transform.position);
+                if (distanceToCamp > maxDistanceToCamp) 
+                {
+                    Debug.Log("Too far from camp to sleep!");
+                }
+                else if (!isFading)
+                {
+                    StartCoroutine(CampRoutine());
+                }
             }
             else if (!isFading)
             {
                 StartCoroutine(CampRoutine());
             }
         }
-        else if (!isFading)
-        {
-            StartCoroutine(CampRoutine());
-        }
     }
 
     public void OnInteract()
     {
-        if (camp == null)
-            return;
-        float distanceToCamp = Vector3.Distance(transform.position, camp.transform.position);
-        if (distanceToCamp > maxDistanceToCamp) 
+        if (player.controller.isGrounded && !player.isCrashed)
         {
-            Debug.Log("Too far from camp to sleep!");
-        }
-        else if (!isFading)
-        {
-            StartCoroutine(SleepRoutine());
+            if (camp == null)
+                return;
+            float distanceToCamp = Vector3.Distance(transform.position, camp.transform.position);
+            if (distanceToCamp > maxDistanceToCamp) 
+            {
+                Debug.Log("Too far from camp to sleep!");
+            }
+            else if (!isFading && player.controller.isGrounded)
+            {
+                StartCoroutine(SleepRoutine());
+            }
         }
     }
 

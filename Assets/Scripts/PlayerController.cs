@@ -141,13 +141,13 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         movement = Vector3.ClampMagnitude(movement, 1f); // Empêche de dépasser une magnitude de 1 quand on bouge en diagonale
 
         //QUAND ON NE PEUT RIEN FAIRE (atterrissage, crash)
-        if (animationPause || isBusy) //pour les animations
+        if (animationPause) //pour les animations
         {
-            if (!controller.isGrounded) //soit on est en air time
+            if (!controller.isGrounded || isBusy) //soit on est en air time
                 velocity.y += gravity * Time.deltaTime;
             else if (velocity.y < 0) //soit on est au sol, ou on vient de toucher le sol
             {
-                velocity.y = groundGravity * Time.deltaTime;
+                velocity.y = groundGravity;
                 float horizontalSpeed = new Vector3(velocity.x, 0f, velocity.z).magnitude;
                 float dynamicDecel = deceleration / (1f + horizontalSpeed / maxSpeed);
                 velocity.x = Mathf.Lerp(velocity.x, 0f, dynamicDecel * Time.deltaTime);

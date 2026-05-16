@@ -25,7 +25,7 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
     [Header("Backpack")]
     private GameObject backpack;
     public Transform chest;
-    private Vector3 backpackPosition = new Vector3(0, 0, -0.4f);
+    private Vector3 backpackPosition = new Vector3(0f, -0.8f, 0f);
 
 
 
