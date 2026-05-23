@@ -6,16 +6,21 @@ public class PlayerEffects : MonoBehaviour
     public PlayerController player;
     public GameObject impactPrefab;
     public GameObject boostCloudPrefab;
+    public ParticleSystem runDustPrefab;
+    private PlayerAnimation playerAnimation;
     
     void Start()
     {
         player = GetComponent<PlayerController>();
+        playerAnimation = GetComponent<PlayerAnimation>();
     }
 
     void Update()
     {
-        var emission = boostParticles.emission;
-        emission.enabled = player.isBoosting && player.velocity.magnitude > player.airLiftVelocity;
+        var boostEmission = boostParticles.emission;
+        var runEmission = runDustPrefab.emission;
+        boostEmission.enabled = player.isBoosting && player.velocity.magnitude > player.airLiftVelocity;
+        runEmission.enabled = (playerAnimation.GetDistanceToGround() < 10f && (player.isGliding || player.isBoosting)) || player.controller.isGrounded;
     }
 
     public void HandleCollision(ControllerColliderHit hit)
