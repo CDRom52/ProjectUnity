@@ -86,6 +86,7 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
         anim.SetBool("CanJump", stats.canJump);
         anim.SetBool("HasCrashed", player.hasCrashed);
         anim.SetBool("GetUpBack", player.getUpBack);
+        anim.SetFloat("Energy", stats.currentEnergy);
     }
 
     void HandleIdleTimer()

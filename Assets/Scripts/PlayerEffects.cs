@@ -5,6 +5,7 @@ public class PlayerEffects : MonoBehaviour
     public ParticleSystem boostParticles;
     public PlayerController player;
     public GameObject impactPrefab;
+    public GameObject boostCloudPrefab;
     
     void Start()
     {
@@ -21,5 +22,10 @@ public class PlayerEffects : MonoBehaviour
     {
         Quaternion spawnRotation = Quaternion.LookRotation(-hit.normal);
         GameObject debris = Instantiate(impactPrefab, hit.point, spawnRotation);
+    }
+
+    public void StartBoost()
+    {
+        GameObject boostCloud = Instantiate(boostCloudPrefab, player.transform.position, player.transform.rotation);
     }
 }

@@ -325,7 +325,7 @@ Light:
   serializedVersion: 13
   m_Type: 1
   m_Color: {r: 0.7528302, g: 1, b: 0.9807654, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0.5
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -8590,16 +8590,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   cloudPrefab: {fileID: 328275770681376679, guid: 11310b8bd76c80743ae081e20434f415, type: 3}
-  numberOfClouds: 30
+  numberOfClouds: 100
   mapWidthX: 5000
   mapLengthZ: 5000
   minFlightHeightY: 400
   maxFlightHeightY: 600
-  minScale: 1
+  minScale: 0.5
   maxScale: 10
-  windDirection: {x: 1, y: 0, z: 0}
-  windSpeed: 5
-  timeStep: 2
 --- !u!1 &1317122148
 GameObject:
   m_ObjectHideFlags: 0
@@ -10631,6 +10628,10 @@ PrefabInstance:
       value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 2941008082388494835, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+      propertyPath: airBoostSpeed
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 2941008082388494835, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
       propertyPath: cameraTransform
       value: 
       objectReference: {fileID: 961739753}
@@ -10646,6 +10647,10 @@ PrefabInstance:
       propertyPath: boostParticles
       value: 
       objectReference: {fileID: 618671493}
+    - target: {fileID: 8625615225577243421, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+      propertyPath: boostCloudPrefab
+      value: 
+      objectReference: {fileID: 4301815494506962267, guid: 1e405cd0eea14034a87496e010797f96, type: 3}
     - target: {fileID: 8658005166008492791, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1001.9

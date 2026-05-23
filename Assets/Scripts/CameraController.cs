@@ -172,7 +172,7 @@ public class CameraController : MonoBehaviour
 
     void UpdateShakeOffset()
     {
-        if (playerScript.isBoosting)
+        if (playerScript.isBoosting || (!playerScript.controller.isGrounded && !playerScript.isGliding && !playerScript.isBoosting))
         {
             float boostFactor = Mathf.InverseLerp(0, playerScript.airBoostSpeed, playerScript.velocity.magnitude);
             Vector3 targetShake = Random.insideUnitSphere * (shakeAmount * boostFactor);

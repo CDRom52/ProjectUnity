@@ -195,6 +195,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             {
                 isBoosting = true;
                 isGliding = false;
+                effects.StartBoost();
             }
             else if (!stats.canBoost)
                 isBoosting = false;
