@@ -8,8 +8,8 @@ A 3D project focused on smooth movement and environment interaction in Unity 6.
 * **Environment:** Designed a 3D mountain landscape using Unity’s Terrain tools.
 
 ## Art & Assets
-* **Character Model:** Self-authored in Blender (Simple character design).
-* **Environment:** Trees generated using Blender Sapling Add-on; terrain sculpted in Unity.
+* **All models:** made in Blender.
+* **Environment:** Terrain sculpted in Unity.
 * **Animations:** Using Mixamo.
 
 ## How to Play
