@@ -108,7 +108,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     void OnSprint(InputValue value)
     {
         isSprinting = value.isPressed;
-        if (isSprinting)
+        if (value.isPressed)
         {
             sprintLastFrame = true;
         }
@@ -308,9 +308,9 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         }
         
         //ACTIONS QUI COÛTENT DE LA STAMINA (boost)
-        if (startBoost) //soit on sprint
+        if (isSprinting) //soit on sprint
         {
-            if (!controller.isGrounded && !isBoosting && stats.canBoost && movementY > 0) //soit on active un boost
+            if (startBoost && !isBoosting && stats.canBoost && movementY > 0) //soit on active un boost
             {
                 isBoosting = true;
                 isGliding = false;

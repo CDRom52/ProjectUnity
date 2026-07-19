@@ -7706,8 +7706,6 @@ MonoBehaviour:
   maxDistortion: 0
   fxInSpeed: 0.5
   fxOutSpeed: 1
-  shakeAmount: 0.2
-  shakeSpeed: 20
   player: {fileID: 2042177409}
   playerScript: {fileID: 2042177410}
   hipsRb: {fileID: 0}
@@ -10676,6 +10674,10 @@ PrefabInstance:
       value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 2941008082388494835, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+      propertyPath: groundHitSpeed
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 2941008082388494835, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
       propertyPath: cameraTransform
       value: 
       objectReference: {fileID: 961739753}
@@ -10687,6 +10689,10 @@ PrefabInstance:
       propertyPath: m_Data.m_SourceObjects.m_Item0.transform
       value: 
       objectReference: {fileID: 606947767}
+    - target: {fileID: 7027768455394174600, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8625615225577243421, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
       propertyPath: runDustPrefab
       value: 
