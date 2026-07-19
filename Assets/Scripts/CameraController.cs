@@ -44,11 +44,6 @@ public class CameraController : MonoBehaviour
     public float fxInSpeed = 2f;
     public float fxOutSpeed = 3f;
 
-    [Header("Shake Settings")]
-    public float shakeAmount = 0.1f;
-    public float shakeSpeed = 20f;
-    private Vector3 shakeOffset;
-
     [Header("References")]
     public Transform player;
     public PlayerController playerScript;
@@ -120,7 +115,6 @@ public class CameraController : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(pitch, yaw, 0f);
 
         HandleFOV();
-        UpdateShakeOffset();
 
         Vector3 headPosition = ActiveTarget.position + Vector3.up * height;
         Vector3 fullOffset = rotation * new Vector3(shoulderOffset, 0f, -distance);
@@ -143,7 +137,7 @@ public class CameraController : MonoBehaviour
         Vector3 basePosition = headPosition + finalOffset;
 
         // 4. Apply the position with your existing Shake
-        transform.position = basePosition + shakeOffset;
+        transform.position = basePosition;
 
         // 5. Look at target (centered on player's head/shoulder)
         Vector3 lookAtTarget = headPosition + rotation * Vector3.right * shoulderOffset;
@@ -161,26 +155,7 @@ public class CameraController : MonoBehaviour
 
             targetFOV = Mathf.Lerp(baseFOV, maxFOV, speedPercent); 
         }
-        else if (playerScript.isSprinting)
-        {
-            float currentCharge = playerScript.currentChargeJump / playerScript.maxChargeJump;
-            targetFOV = Mathf.Lerp(baseFOV, minFOV, currentCharge);
-        }
 
         cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, targetFOV, Time.deltaTime * fovChangeSpeed);
-    }
-
-    void UpdateShakeOffset()
-    {
-        if (playerScript.isBoosting || (!playerScript.controller.isGrounded && !playerScript.isGliding && !playerScript.isBoosting))
-        {
-            float boostFactor = Mathf.InverseLerp(0, playerScript.airBoostSpeed, playerScript.velocity.magnitude);
-            Vector3 targetShake = Random.insideUnitSphere * (shakeAmount * boostFactor);
-            shakeOffset = Vector3.Lerp(shakeOffset, targetShake, Time.deltaTime * shakeSpeed);
-        }
-        else
-        {
-            shakeOffset = Vector3.Lerp(shakeOffset, Vector3.zero, Time.deltaTime * shakeSpeed);
-        }
     }
 }

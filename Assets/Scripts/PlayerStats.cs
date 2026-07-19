@@ -91,11 +91,6 @@ public class PlayerStats : MonoBehaviour
         currentStamina -= staminaUseRate * Time.deltaTime;
     }
 
-    public void ChargeJump()
-    {
-        currentStamina -= staminaJumpCost * (playerScript.currentChargeJump / playerScript.maxChargeJump);
-    }
-
     public void Sleep()
     {
         currentEnergy = maxEnergy;
