@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Unity.Collections;
 using Unity.Multiplayer.Center.Common.Analytics;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -70,6 +71,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public bool isGliding = false; //Si le joueur plane
     public bool isBoosting = false; //Si le joueur utilise le boost aérien
     public bool isCrashed = false;
+    public bool canFly = false;
 
     [Header("References")]
     public CharacterController controller; // Référence au CharacterController du joueur
@@ -116,9 +118,14 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
     void OnJump(InputValue value)
     {
-        if (value.isPressed && controller.isGrounded)
+        if (value.isPressed)
         {
-            Jump();
+            if (controller.isGrounded)
+                Jump();
+            else
+                canFly = !canFly;
+                if (canFly)
+                    StartFlying();
         }
     }
 
@@ -144,6 +151,20 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         velocity.y = jumpSpeed;
     }
 
+    void StartFlying()
+    {
+        Vector3 boostDirectionHorizontal;
+        boostDirection = cameraTransform.forward.normalized;
+        boostDirectionHorizontal = Vector3.Scale(boostDirection, new Vector3(1, 0, 1)).normalized;
+
+        Vector3 actualDirection = Vector3.RotateTowards(velocity.normalized, boostDirection, boostRotationSpeed * Time.deltaTime, 0f);
+        velocity = actualDirection * airBoostSpeed;
+        
+        Quaternion targetRotation = Quaternion.LookRotation(boostDirectionHorizontal);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, boostRotationSpeed * Time.deltaTime);
+        stats.AirBoost();
+    }
+
     void Glide()
     {
         velocity = Vector3.Slerp(velocity, cameraTransform.forward * velocity.magnitude, Time.deltaTime * glideFollowSpeed);
@@ -159,12 +180,12 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             transform.rotation = Quaternion.LookRotation(horizontalVelocity);
         }
 
-        if (movementY <= 0 || newSpeed < stallVelocity || !stats.canFly) isGliding = false;
+        if (newSpeed < stallVelocity || !stats.canFly || !canFly) isGliding = false;
     }
 
     void Fall()
     {
-        if (movementY > 0 && velocity.magnitude > airLiftVelocity && stats.canFly)
+        if (velocity.magnitude > airLiftVelocity && stats.canFly && canFly)
         {
             isGliding = true;
         }
@@ -293,7 +314,8 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         }
         else if (controller.isGrounded)
         {
-            startBoost = false; 
+            startBoost = false;
+            canFly = false;
         }
         sprintLastFrame = false;
         
@@ -310,7 +332,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         //ACTIONS QUI COÛTENT DE LA STAMINA (boost)
         if (isSprinting) //soit on sprint
         {
-            if (startBoost && !isBoosting && stats.canBoost && movementY > 0) //soit on active un boost
+            if (startBoost && !isBoosting && stats.canBoost && canFly) //soit on active un boost
             {
                 isBoosting = true;
                 isGliding = false;
@@ -346,7 +368,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         {
             Glide();
         }
-        velocity = Vector3.ClampMagnitude(velocity, airBoostSpeed);
+        velocity = Vector3.ClampMagnitude(velocity, 2*airBoostSpeed);
         controller.Move(velocity * Time.deltaTime); //Déplacement final
     }
 
