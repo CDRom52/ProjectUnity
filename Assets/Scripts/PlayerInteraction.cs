@@ -116,11 +116,9 @@ public class PlayerInteraction : MonoBehaviour
         if (camp != null)
         {
             Destroy(camp);
-            playerAnimation.SetCamp(false);
         }
         else
         {
-            playerAnimation.SetCamp(true);
             Vector3 spawnPosition = transform.position + (transform.forward * 2.0f);
             if (Physics.Raycast(spawnPosition + Vector3.up, Vector3.down, out RaycastHit hit, 5f))
             {
