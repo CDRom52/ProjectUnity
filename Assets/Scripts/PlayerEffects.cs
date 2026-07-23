@@ -8,6 +8,8 @@ public class PlayerEffects : MonoBehaviour
     public GameObject boostCloudPrefab;
     public ParticleSystem runDustPrefab;
     private PlayerAnimation playerAnimation;
+    [SerializeField] private TrailRenderer windTrailR;
+    [SerializeField] private TrailRenderer windTrailL;
     
     void Start()
     {
@@ -21,6 +23,8 @@ public class PlayerEffects : MonoBehaviour
         var runEmission = runDustPrefab.emission;
         boostEmission.enabled = player.isBoosting && player.velocity.magnitude > player.airLiftVelocity;
         runEmission.enabled = (playerAnimation.GetDistanceToGround() < 10f && (player.isGliding || player.isBoosting)) || player.controller.isGrounded;
+        windTrailR.emitting = player.isGliding || player.isBoosting;
+        windTrailL.emitting = player.isGliding || player.isBoosting;
     }
 
     public void HandleCollision(ControllerColliderHit hit)
