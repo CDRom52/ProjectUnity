@@ -12,10 +12,10 @@ public class DayNightCycle : MonoBehaviour
     void Start()
     {
         rotationSpeed = 360f / (dayLengthInMinutes * 60f);
-        StartCoroutine(OptimizedShadowUpdate());
+        StartCoroutine(ShadowUpdate());
     }
 
-    IEnumerator OptimizedShadowUpdate()
+    IEnumerator ShadowUpdate()
     {
         while (true)
         {
