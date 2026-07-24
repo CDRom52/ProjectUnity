@@ -1,5 +1,6 @@
 using NUnit.Framework.Internal;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerStats : MonoBehaviour
 {
@@ -23,10 +24,11 @@ public class PlayerStats : MonoBehaviour
     public float staminaRegenTime = 5f; // Temps pour régénérer toute la stamina
     public float staminaRegenRate; // Stamina régénérée par seconde
     public float staminaUseRate = 25f; // Stamina utilisée par seconde
-    public float staminaJumpCost = 20f; // Stamina utilisée pour un super saut
+    public float staminaFlyCost = 5f; // Stamina utilisée pour un super saut
     public bool canBoost = true;
     public bool canJump = true;
     public bool canFly = true;
+    public bool canStart = true;
     private float eps = 0.01f;
 
     [Header("Cooldown Settings")]
@@ -47,6 +49,7 @@ public class PlayerStats : MonoBehaviour
         canBoost = currentStamina > staminaUseRate * eps;
         canJump = currentStamina > staminaUseRate * eps;
         canFly = currentEnergy > energyUseRate * eps;
+        canStart = currentStamina > staminaFlyCost;
 
         HealthUpdate();
         EnergyUpdate();
@@ -95,5 +98,10 @@ public class PlayerStats : MonoBehaviour
     {
         currentEnergy = maxEnergy;
         currentHealth = maxHealth;
+    }
+
+    public void BoostFlying()
+    {
+        currentStamina -= staminaFlyCost;
     }
 }

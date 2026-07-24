@@ -47,7 +47,7 @@ public class PlayerInteraction : MonoBehaviour
         foreach (Collider hit in hits)
         {
             NPCController npc = hit.GetComponentInParent<NPCController>();
-            if (npc != null && npc.isRagdoll && !npc.isGrabbed)
+            if (npc != null && !npc.isGrabbed)
             {
                 grabbedNPC = npc;
                 break;

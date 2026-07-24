@@ -79,7 +79,6 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public Transform cameraTransform; // Référence au Transform de la caméra : objet lié à la position, rotation, échelle, ...
     public PlayerStats stats;
     private Animator anim;
-    private RagdollController ragdoll;
     private PlayerEffects effects;
     private PlayerInteraction interaction;
 
@@ -93,7 +92,6 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         //< > : précise le type de l'entrée
         controller = GetComponent<CharacterController>(); // GetComponent : hérité de MonoBehaviour 
         anim = GetComponentInChildren<Animator>();
-        ragdoll = GetComponent<RagdollController>();
         effects = GetComponent<PlayerEffects>();
         interaction = GetComponent<PlayerInteraction>();
         getUpTimer = getUpTimerDuration;
@@ -124,8 +122,11 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
                 Jump();
             else
                 canFly = !canFly;
-                if (canFly)
+                if (canFly && stats.canStart)
+                {
                     StartFlying();
+                    stats.BoostFlying();
+                }
         }
     }
 
@@ -271,10 +272,8 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
                 if (getUpTimer <= 0f)
                 {
                     getUpTimer = getUpTimerDuration;
-                    getUpBack = ragdoll.UpBack();
                     isCrashed = false;
                     hasCrashed = true;
-                    ragdoll.Land();
                 }
             }
             float dynamicDecel = deceleration / (1f + horizontalSpeed / maxSpeed);
@@ -385,7 +384,6 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             isGliding = false;
             isBoosting = false;
             velocity = bounceDirection * bounciness;
-            ragdoll.HandleCollision(hit);
             if (hit.gameObject.layer == 6)
                 effects.HandleCollision(hit);
         }

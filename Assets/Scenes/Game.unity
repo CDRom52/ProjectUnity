@@ -10937,10 +10937,50 @@ PrefabInstance:
       propertyPath: cameraTransform
       value: 
       objectReference: {fileID: 961739753}
+    - target: {fileID: 2941008082388494835, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+      propertyPath: airBoostAcceleration
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 3379000406202037508, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
       propertyPath: fadeGroup
       value: 
       objectReference: {fileID: 1326249323}
+    - target: {fileID: 4352403520438712747, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+      propertyPath: m_ConnectedBody
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4466412677988351536, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+      propertyPath: m_ConnectedBody
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4670491176310618217, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+      propertyPath: m_ConnectedBody
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5054740812098753680, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+      propertyPath: m_ConnectedBody
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5216866094028415538, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+      propertyPath: m_ConnectedBody
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5786125205155275892, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+      propertyPath: m_ConnectedBody
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5843260223414135796, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+      propertyPath: m_ConnectedBody
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395694619025429459, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+      propertyPath: m_ConnectedBody
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6611795170695457466, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+      propertyPath: m_ConnectedBody
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6871574783245502595, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
       propertyPath: m_Data.m_SourceObjects.m_Item0.transform
       value: 
@@ -10948,6 +10988,10 @@ PrefabInstance:
     - target: {fileID: 7027768455394174600, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7755486268087995826, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+      propertyPath: staminaFlyCost
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 8625615225577243421, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
       propertyPath: windTrailL
@@ -10969,6 +11013,10 @@ PrefabInstance:
       propertyPath: boostCloudPrefab
       value: 
       objectReference: {fileID: 4301815494506962267, guid: 1e405cd0eea14034a87496e010797f96, type: 3}
+    - target: {fileID: 8631291311774684726, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+      propertyPath: m_ConnectedBody
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8658005166008492791, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1001.9
@@ -11009,7 +11057,40 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2566911105609619652, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 1724313095796162235, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 6480843894632615695, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 7111102010361455667, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 8631291311774684726, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 1210240014987567164, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 8789976222217300359, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 4352403520438712747, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 6109507991858783732, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 8951862802327570327, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 5054740812098753680, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 493897184564229425, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 113219702946901910, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 4670491176310618217, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 854716779073076152, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 182663559412502884, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 6395694619025429459, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 5049185423647286981, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 7102377351333684480, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 4466412677988351536, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 8036283121890032457, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 4335609722712950202, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 6611795170695457466, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 8789228739952059086, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 358982723188125495, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 5843260223414135796, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 6840440143822008162, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 2476275652657985963, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 5786125205155275892, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 7858858970988154714, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 1178315098562987425, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 5216866094028415538, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+    - {fileID: 6041871973817483003, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 8658005166008492791, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
