@@ -10923,7 +10923,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2941008082388494835, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
       propertyPath: deceleration
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2941008082388494835, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
       propertyPath: airBoostSpeed
