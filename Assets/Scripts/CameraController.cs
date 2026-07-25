@@ -41,9 +41,9 @@ public class CameraController : MonoBehaviour
     [Header("Effects")]
     public Volume speedVolume; // Drag your Global Volume here
     private ChromaticAberration chromatic;
-    private LensDistortion lensDist;
+    private MotionBlur motionBlur;
     [Range(0f, 1f)] public float maxChromatic = 0.3f;
-    [Range(-1f, 0f)] public float maxDistortion = -0.2f;
+    [Range(0f, 1f)] public float maxMotionBlur = 0.6f;
     public float fxInSpeed = 2f;
     public float fxOutSpeed = 3f;
 
@@ -59,7 +59,7 @@ public class CameraController : MonoBehaviour
         cam = GetComponent<Camera>();
         playerScript = player.GetComponent<PlayerController>();
         speedVolume.profile.TryGet(out chromatic);
-        speedVolume.profile.TryGet(out lensDist);
+        speedVolume.profile.TryGet(out motionBlur);
         ActiveTarget = player;
     }
 
@@ -76,8 +76,8 @@ public class CameraController : MonoBehaviour
         float targetChromatic = boostFactor * maxChromatic;
         chromatic.intensity.value = Mathf.Lerp(chromatic.intensity.value, targetChromatic, Time.deltaTime * lerpSpeed);
 
-        float targetDistort = boostFactor * maxDistortion;
-        lensDist.intensity.value = Mathf.Lerp(lensDist.intensity.value, targetDistort, Time.deltaTime * lerpSpeed);
+        float targetMotionBlur = boostFactor * maxMotionBlur;
+        motionBlur.intensity.value = Mathf.Lerp(motionBlur.intensity.value, targetMotionBlur, Time.deltaTime * lerpSpeed);
     }
 
     void LateUpdate() //La caméra se déplace après que le joueur a bougé

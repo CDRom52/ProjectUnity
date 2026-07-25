@@ -6633,8 +6633,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2042177409}
     - target: {fileID: 9144503533193396904, guid: baf77c60a75c172489bc41013d3f7baa, type: 3}
+      propertyPath: fxInSpeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9144503533193396904, guid: baf77c60a75c172489bc41013d3f7baa, type: 3}
       propertyPath: maxOffset
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9144503533193396904, guid: baf77c60a75c172489bc41013d3f7baa, type: 3}
+      propertyPath: fxOutSpeed
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 9144503533193396904, guid: baf77c60a75c172489bc41013d3f7baa, type: 3}
       propertyPath: speedVolume
@@ -6644,6 +6652,14 @@ PrefabInstance:
       propertyPath: playerScript
       value: 
       objectReference: {fileID: 2042177410}
+    - target: {fileID: 9144503533193396904, guid: baf77c60a75c172489bc41013d3f7baa, type: 3}
+      propertyPath: maxDistortion
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9144503533193396904, guid: baf77c60a75c172489bc41013d3f7baa, type: 3}
+      propertyPath: maxMotionBlur
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6675,6 +6691,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2941008082388494835, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
       propertyPath: runSpeed
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2941008082388494835, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+      propertyPath: brakeDrag
       value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 2941008082388494835, guid: d561a358220328c4596d8f7e41f870e9, type: 3}

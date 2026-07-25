@@ -187,14 +187,17 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             float speedChange = pitch * -15f;
             float newSpeed = velocity.magnitude + (speedChange - glideDrag) * Time.deltaTime;
             velocity = velocity.normalized * newSpeed;
-            Vector3 horizontalVelocity = new Vector3(velocity.x, 0f, velocity.z);
-
-            if (horizontalVelocity.sqrMagnitude > 0.01f)
-            {
-                transform.rotation = Quaternion.LookRotation(horizontalVelocity);
-            }
         }
-        if (velocity.magnitude < stallVelocity || !stats.canFly || !askFly) isGliding = false;
+
+        Vector3 horizontalVelocity = new Vector3(velocity.x, 0f, velocity.z);
+
+        transform.rotation = Quaternion.LookRotation(horizontalVelocity);
+
+        if (velocity.magnitude < stallVelocity || !stats.canFly || !askFly)
+        {
+            isGliding = false;
+            isBraking = false;
+        }
     }
 
     void Fall()
