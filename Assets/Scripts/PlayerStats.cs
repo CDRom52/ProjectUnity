@@ -17,6 +17,7 @@ public class PlayerStats : MonoBehaviour
     public float currentEnergy;
     public float energyRegenRate = 5f;
     public float energyUseRate = 0.1f;
+    public float energyFlyCost = 5f;
 
     [Header("Stamina")]
     public float maxStamina = 100f;
@@ -103,5 +104,6 @@ public class PlayerStats : MonoBehaviour
     public void BoostFlying()
     {
         currentStamina -= staminaFlyCost;
+        currentEnergy -=energyFlyCost;
     }
 }

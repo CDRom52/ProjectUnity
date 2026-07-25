@@ -10,7 +10,10 @@ public class CameraController : MonoBehaviour
     public float distance = 5f;
     public float height = 2f;
     public float sensitivity = 2f;
-    public float shoulderOffset = 0.5f; // Négatif pour la gauche, positif pour la droite
+    public float offset = 0.5f; // Négatif pour la gauche, positif pour la droite
+    public float normalOffset = 0.5f; // Négatif pour la gauche, positif pour la droite
+    public float targetOffset = 0.5f; // Négatif pour la gauche, positif pour la droite
+    public float maxOffset = 1f;
     private float yaw = 0f; //Lacet : rotation autour de l'axe Y
     private float pitch = 20f; //Tangage : rotation autour de l'axe X
     public float minPitch = -10f; // Limite de rotation vers le bas
@@ -116,8 +119,10 @@ public class CameraController : MonoBehaviour
 
         HandleFOV();
 
+        HandleOffset();
+
         Vector3 headPosition = ActiveTarget.position + Vector3.up * height;
-        Vector3 fullOffset = rotation * new Vector3(shoulderOffset, 0f, -distance);
+        Vector3 fullOffset = rotation * new Vector3(offset, 0f, -distance);
         Vector3 desiredPosition = headPosition + fullOffset;
 
         // 2. Check for obstacles between the player's head and the desired position
@@ -133,14 +138,14 @@ public class CameraController : MonoBehaviour
         }
 
         // 3. Final Position Calculation
-        Vector3 finalOffset = rotation * new Vector3(shoulderOffset, 0f, -actualDistance);
+        Vector3 finalOffset = rotation * new Vector3(offset, 0f, -actualDistance);
         Vector3 basePosition = headPosition + finalOffset;
 
         // 4. Apply the position with your existing Shake
         transform.position = basePosition;
 
         // 5. Look at target (centered on player's head/shoulder)
-        Vector3 lookAtTarget = headPosition + rotation * Vector3.right * shoulderOffset;
+        Vector3 lookAtTarget = headPosition + rotation * Vector3.right * offset;
         transform.LookAt(lookAtTarget);
     }
 
@@ -157,5 +162,16 @@ public class CameraController : MonoBehaviour
         }
 
         cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, targetFOV, Time.deltaTime * fovChangeSpeed);
+    }
+
+    void HandleOffset()
+    {
+        if (playerScript.isGliding)
+            targetOffset = playerScript.turnSpeed * maxOffset;
+        else if (playerScript.isBoosting)
+            targetOffset = 0f;
+        else
+            targetOffset = normalOffset;
+        offset = Mathf.Lerp(offset, targetOffset, playerScript.tiltSpeed*Time.deltaTime);
     }
 }
