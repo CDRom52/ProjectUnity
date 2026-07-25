@@ -39,7 +39,7 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
     void Update()
     {
         //QUAND ON NE PEUT RIEN FAIRE (atterrissage)
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Land") || anim.GetCurrentAnimatorStateInfo(0).IsName("GetUpBack")|| anim.GetCurrentAnimatorStateInfo(0).IsName("GetUpFront"))
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("GetUpFront"))
         {
             player.animationPause = true;
         }
@@ -113,7 +113,7 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
         {
             float horizontalSpeed = new Vector3(player.velocity.x, 0f, player.velocity.z).magnitude;
 
-            if (player.isGliding || player.isBoosting)
+            if ((player.isGliding || player.isBoosting) && !player.isBraking)
             {
                 float flyRatio = Vector3.Dot(player.velocity.normalized, Vector3.up); //à quel point on pointe vers le haut (-1 à 1)
                 targetPitch = -flyRatio * player.flyPitchAngle;

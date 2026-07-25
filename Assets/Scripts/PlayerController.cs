@@ -71,7 +71,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public bool isGliding = false; //Si le joueur plane
     public bool isBoosting = false; //Si le joueur utilise le boost aérien
     public bool isCrashed = false;
-    public bool canFly = false;
+    public bool askFly = false;
 
     [Header("References")]
     public CharacterController controller; // Référence au CharacterController du joueur
@@ -121,8 +121,8 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             if (controller.isGrounded)
                 Jump();
             else
-                canFly = !canFly;
-                if (canFly && stats.canStart)
+                askFly = !askFly;
+                if (askFly && stats.canStart)
                 {
                     StartFlying();
                     stats.BoostFlying();
@@ -168,41 +168,40 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
     void Glide()
     {
-        velocity = Vector3.Slerp(velocity, cameraTransform.forward * velocity.magnitude, Time.deltaTime * glideFollowSpeed);
-
-        float pitch = cameraTransform.forward.y;
-        float speedChange = pitch * -15f;
-        float newSpeed = velocity.magnitude + (speedChange - glideDrag) * Time.deltaTime;
-        velocity = velocity.normalized * newSpeed;
-        
-        Vector3 horizontalVelocity = new Vector3(velocity.x, 0f, velocity.z);
-        if (horizontalVelocity.sqrMagnitude > 0.01f)
-        {
-            transform.rotation = Quaternion.LookRotation(horizontalVelocity);
-        }
-
-        if (newSpeed < stallVelocity || !stats.canFly || !canFly) isGliding = false;
-    }
-
-    void Fall()
-    {
-        if (velocity.magnitude > airLiftVelocity && stats.canFly && canFly)
-        {
-            isGliding = true;
-        }
-        else if (movementY < 0)
+        if (movementY < 0)
         {
             isBraking = true;
             Vector3 forwardDir = transform.forward;
-            forwardDir.y = 0; 
+            forwardDir.y = 0;
             forwardDir.Normalize();
             Vector3 horizontalBrake = forwardDir * brakeDrag * Time.deltaTime;
             velocity.x -= horizontalBrake.x;
             velocity.z -= horizontalBrake.z;
         }
-        else if (movementY == 0)
+        else
         {
             isBraking = false;
+            velocity = Vector3.Slerp(velocity, cameraTransform.forward * velocity.magnitude, Time.deltaTime * glideFollowSpeed);
+
+            float pitch = cameraTransform.forward.y;
+            float speedChange = pitch * -15f;
+            float newSpeed = velocity.magnitude + (speedChange - glideDrag) * Time.deltaTime;
+            velocity = velocity.normalized * newSpeed;
+            Vector3 horizontalVelocity = new Vector3(velocity.x, 0f, velocity.z);
+
+            if (horizontalVelocity.sqrMagnitude > 0.01f)
+            {
+                transform.rotation = Quaternion.LookRotation(horizontalVelocity);
+            }
+        }
+        if (velocity.magnitude < stallVelocity || !stats.canFly || !askFly) isGliding = false;
+    }
+
+    void Fall()
+    {
+        if (velocity.magnitude > airLiftVelocity && stats.canFly && askFly)
+        {
+            isGliding = true;
         }
     }
 
@@ -266,19 +265,19 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         else if (velocity.y < 0) //soit on est au sol, ou on vient de toucher le sol
         {
             float horizontalSpeed = new Vector3(velocity.x, 0f, velocity.z).magnitude;
-            if (horizontalSpeed < 0.1f)
-            {
-                getUpTimer -= Time.deltaTime;
-                if (getUpTimer <= 0f)
+                if (horizontalSpeed < 0.1f)
                 {
-                    getUpTimer = getUpTimerDuration;
-                    isCrashed = false;
-                    hasCrashed = true;
+                    getUpTimer -= Time.deltaTime;
+                    if (getUpTimer <= 0f)
+                    {
+                        getUpTimer = getUpTimerDuration;
+                        isCrashed = false;
+                        hasCrashed = true;
+                    }
                 }
-            }
-            float dynamicDecel = deceleration / (1f + horizontalSpeed / maxSpeed);
-            velocity.x = Mathf.Lerp(velocity.x, 0f, dynamicDecel * Time.deltaTime);
-            velocity.z = Mathf.Lerp(velocity.z, 0f, dynamicDecel * Time.deltaTime);
+                float dynamicDecel = deceleration / (1f + horizontalSpeed / maxSpeed);
+                velocity.x = Mathf.Lerp(velocity.x, 0f, dynamicDecel * Time.deltaTime);
+                velocity.z = Mathf.Lerp(velocity.z, 0f, dynamicDecel * Time.deltaTime);
         }
         controller.Move(velocity * Time.deltaTime);
         return;
@@ -314,7 +313,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         else if (controller.isGrounded)
         {
             startBoost = false;
-            canFly = false;
+            askFly = false;
         }
         sprintLastFrame = false;
         
@@ -331,7 +330,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         //ACTIONS QUI COÛTENT DE LA STAMINA (boost)
         if (isSprinting) //soit on sprint
         {
-            if (startBoost && !isBoosting && stats.canBoost && canFly) //soit on active un boost
+            if (startBoost && !isBoosting && stats.canBoost && askFly) //soit on active un boost
             {
                 isBoosting = true;
                 isGliding = false;
@@ -368,6 +367,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             Glide();
         }
         velocity = Vector3.ClampMagnitude(velocity, 2*airBoostSpeed);
+        velocity = Vector3.ClampMagnitude(velocity, airBoostSpeed);
         controller.Move(velocity * Time.deltaTime); //Déplacement final
     }
 
@@ -386,6 +386,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             velocity = bounceDirection * bounciness;
             if (hit.gameObject.layer == 6)
                 effects.HandleCollision(hit);
+            Debug.Log("CRAAAAAAAAAAAAASHH");
         }
     }
 }

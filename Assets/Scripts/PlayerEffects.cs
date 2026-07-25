@@ -8,8 +8,10 @@ public class PlayerEffects : MonoBehaviour
     public GameObject boostCloudPrefab;
     public ParticleSystem runDustPrefab;
     private PlayerAnimation playerAnimation;
-    [SerializeField] private TrailRenderer windTrailR;
-    [SerializeField] private TrailRenderer windTrailL;
+    [SerializeField] private TrailRenderer windTrailHandR;
+    [SerializeField] private TrailRenderer windTrailHandL;
+    [SerializeField] private TrailRenderer windTrailFootR;
+    [SerializeField] private TrailRenderer windTrailFootL;
     
     void Start()
     {
@@ -23,8 +25,10 @@ public class PlayerEffects : MonoBehaviour
         var runEmission = runDustPrefab.emission;
         boostEmission.enabled = player.isBoosting && player.velocity.magnitude > player.airLiftVelocity;
         runEmission.enabled = (playerAnimation.GetDistanceToGround() < 10f && (player.isGliding || player.isBoosting)) || player.controller.isGrounded;
-        windTrailR.emitting = player.isGliding || player.isBoosting;
-        windTrailL.emitting = player.isGliding || player.isBoosting;
+        windTrailHandR.emitting = player.isGliding || player.isBoosting;
+        windTrailHandL.emitting = player.isGliding || player.isBoosting;
+        windTrailFootR.emitting = player.isBraking;
+        windTrailFootL.emitting = player.isBraking;
     }
 
     public void HandleCollision(ControllerColliderHit hit)
