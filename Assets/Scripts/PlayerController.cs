@@ -158,7 +158,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         boostDirectionHorizontal = Vector3.Scale(boostDirection, new Vector3(1, 0, 1)).normalized;
 
         Vector3 actualDirection = Vector3.RotateTowards(velocity.normalized, boostDirection, boostRotationSpeed * Time.deltaTime, 0f);
-        velocity = actualDirection * airBoostSpeed;
+        velocity = actualDirection * 0.5f *airBoostSpeed;
         
         Quaternion targetRotation = Quaternion.LookRotation(boostDirectionHorizontal);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, boostRotationSpeed * Time.deltaTime);
