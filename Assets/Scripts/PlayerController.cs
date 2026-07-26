@@ -140,7 +140,6 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
     void OnInteract(InputValue value)
     {
-        Debug.Log("SLEEP");
         if (value.isPressed)
         {
             interaction.OnInteract();

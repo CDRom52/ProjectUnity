@@ -10,10 +10,10 @@ public class PlayerInteraction : MonoBehaviour
     private Transform playerVisual;
     private PlayerAnimation playerAnimation;
     private PlayerStats playerStats;
+    public PlayerInventory inventory;
 
-    [Header("Grabbing NPC")]
-    public float grabSpeedMultiplier = 0.3f;
-    public float grabRadius = 1.5f;
+    [Header("Pick Up Package")]
+    public PackagePickup nearbyPackage;
 
     [Header("Camp")]
     private GameObject camp;
@@ -32,42 +32,13 @@ public class PlayerInteraction : MonoBehaviour
         player = GetComponent<PlayerController>();
         playerAnimation = GetComponent<PlayerAnimation>();
         playerStats = GetComponent<PlayerStats>();
-        player.speedMultiplier = grabbedNPC != null ? grabSpeedMultiplier : 1f;
+        player.speedMultiplier = grabbedNPC != null ? 0.5f : 1f;
     }
 
     // Update is called once per frame
     void Update()
     {
         
-    }
-
-    void TryGrab()
-    {
-        Collider[] hits = Physics.OverlapSphere(playerVisual.position, grabRadius);
-        foreach (Collider hit in hits)
-        {
-            NPCController npc = hit.GetComponentInParent<NPCController>();
-            if (npc != null && !npc.isGrabbed)
-            {
-                grabbedNPC = npc;
-                break;
-            }
-        }
-    }
-
-    void ReleaseGrab()
-    {
-        if (grabbedNPC == null) return;
-        grabbedNPC.Release();
-        grabbedNPC = null;
-    }
-
-    public void Grab()
-    {
-        if (grabbedNPC == null)
-            TryGrab();
-        else
-            ReleaseGrab();
     }
 
     public void OnCamp()
@@ -79,7 +50,7 @@ public class PlayerInteraction : MonoBehaviour
                 float distanceToCamp = Vector3.Distance(transform.position, camp.transform.position);
                 if (distanceToCamp > maxDistanceToCamp) 
                 {
-                    Debug.Log("Too far from camp to sleep!");
+                    Debug.Log("Too far from camp to put away!");
                 }
                 else if (!isFading)
                 {
@@ -97,17 +68,34 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (player.controller.isGrounded && !player.isCrashed)
         {
-            if (camp == null)
-                return;
-            float distanceToCamp = Vector3.Distance(transform.position, camp.transform.position);
-            if (distanceToCamp > maxDistanceToCamp) 
-            {
-                Debug.Log("Too far from camp to sleep!");
-            }
-            else if (!isFading && player.controller.isGrounded)
-            {
-                StartCoroutine(SleepRoutine());
-            }
+            Sleep();
+            TryPickUp();
+        }
+    }
+
+    void TryPickUp()
+    {
+        if (nearbyPackage != null)
+        {
+            inventory.AddPackage(nearbyPackage.data);
+            nearbyPackage.OnPickedUp();
+            nearbyPackage = null;
+            return;
+        }
+    }
+
+    void Sleep()
+    {
+        if (camp == null)
+            return;
+        float distanceToCamp = Vector3.Distance(transform.position, camp.transform.position);
+        if (distanceToCamp > maxDistanceToCamp) 
+        {
+            Debug.Log("Too far from camp to sleep!");
+        }
+        else if (!isFading && player.controller.isGrounded)
+        {
+            StartCoroutine(SleepRoutine());
         }
     }
 
@@ -177,4 +165,21 @@ public class PlayerInteraction : MonoBehaviour
 
         fadeGroup.alpha = targetAlpha;
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.TryGetComponent<PackagePickup>(out var package))
+        {
+            nearbyPackage = package;
+            Debug.Log($"Near package: {package.data.packageName}. Press E to pick up.");
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.TryGetComponent<PackagePickup>(out var package) && package == nearbyPackage)
+        {
+            nearbyPackage = null;
+        }
+    } 
 }
