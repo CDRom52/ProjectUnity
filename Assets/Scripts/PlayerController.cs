@@ -158,7 +158,8 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         boostDirectionHorizontal = Vector3.Scale(boostDirection, new Vector3(1, 0, 1)).normalized;
 
         Vector3 actualDirection = Vector3.RotateTowards(velocity.normalized, boostDirection, boostRotationSpeed * Time.deltaTime, 0f);
-        velocity = actualDirection * 0.5f *airBoostSpeed;
+        float speed = Mathf.Max(0.7f *airBoostSpeed, velocity.magnitude);
+        velocity = actualDirection * speed;
         
         Quaternion targetRotation = Quaternion.LookRotation(boostDirectionHorizontal);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, boostRotationSpeed * Time.deltaTime);
@@ -253,6 +254,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
         Vector3 actualDirection = Vector3.RotateTowards(velocity.normalized, boostDirection, boostRotationSpeed * Time.deltaTime, 0f);
         float actualSpeed = Mathf.Lerp(velocity.magnitude, airBoostSpeed * speedMultiplier, airBoostAcceleration * Time.deltaTime);
+        actualSpeed = Mathf.Max(actualSpeed, velocity.magnitude);
         velocity = actualDirection * actualSpeed;
         
         Quaternion targetRotation = Quaternion.LookRotation(boostDirectionHorizontal);
@@ -389,6 +391,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             if (hit.gameObject.layer == 6)
                 effects.HandleCollision(hit);
             Debug.Log("CRAAAAAAAAAAAAASHH");
+            NotificationManager.Instance.ShowNotification($"You crashed.");
         }
     }
 }

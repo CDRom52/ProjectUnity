@@ -77,6 +77,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (nearbyPackage != null)
         {
+            NotificationManager.Instance.ShowNotification($"Package picked up.");
             inventory.AddPackage(nearbyPackage.data);
             nearbyPackage.OnPickedUp();
             nearbyPackage = null;
