@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
-using Unity.VisualScripting;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
+using UnityEngine.Animations.Rigging;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -14,6 +13,7 @@ public class PlayerInteraction : MonoBehaviour
 
     [Header("Pick Up Package")]
     public PackagePickup nearbyPackage;
+    private PackagePickup currentCarriedPackage;
 
     [Header("Camp")]
     private GameObject camp;
@@ -25,6 +25,10 @@ public class PlayerInteraction : MonoBehaviour
     public float fadeDuration = 1.0f;
     private bool isFading = false;
 
+    [Header("IK Arm Rigging")]
+    public TwoBoneIKConstraint armConstraint;
+    public Transform armTarget;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -33,6 +37,7 @@ public class PlayerInteraction : MonoBehaviour
         playerAnimation = GetComponent<PlayerAnimation>();
         playerStats = GetComponent<PlayerStats>();
         player.speedMultiplier = grabbedNPC != null ? 0.5f : 1f;
+        armConstraint.weight = 0f;
     }
 
     // Update is called once per frame
@@ -55,11 +60,13 @@ public class PlayerInteraction : MonoBehaviour
                 else if (!isFading)
                 {
                     StartCoroutine(CampRoutine());
+                    NotificationManager.Instance.ShowNotification($"Putting away camp.");
                 }
             }
             else if (!isFading)
             {
                 StartCoroutine(CampRoutine());
+                NotificationManager.Instance.ShowNotification($"Setting camp.");
             }
         }
     }
@@ -69,7 +76,14 @@ public class PlayerInteraction : MonoBehaviour
         if (player.controller.isGrounded && !player.isCrashed)
         {
             Sleep();
-            TryPickUp();
+            if (currentCarriedPackage != null)
+            {
+                DropPackage();
+            }
+            else
+            {
+                TryPickUp();
+            }
         }
     }
 
@@ -77,12 +91,51 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (nearbyPackage != null)
         {
+            currentCarriedPackage = nearbyPackage;
+
+            armTarget.position = currentCarriedPackage.transform.position;
+
+            currentCarriedPackage.AttachTo(armTarget);
+
+            StopAllCoroutines();
+            StartCoroutine(BlendIKWeight(1f));
+
             NotificationManager.Instance.ShowNotification($"Package picked up.");
-            inventory.AddPackage(nearbyPackage.data);
-            nearbyPackage.OnPickedUp();
             nearbyPackage = null;
-            return;
         }
+    }
+
+    void DropPackage()
+    {
+        if (currentCarriedPackage == null) return;
+
+        // 1. Tell the package to detach itself
+        currentCarriedPackage.Detach();
+
+        NotificationManager.Instance.ShowNotification($"Package dropped.");
+        currentCarriedPackage = null;
+
+        // 2. Return arm animation back to normal
+        StopAllCoroutines();
+        StartCoroutine(BlendIKWeight(0f));
+    }
+
+    private IEnumerator BlendIKWeight(float targetWeight)
+    {
+        if (armConstraint == null) yield break;
+
+        float duration = 0.25f;
+        float elapsed = 0f;
+        float startWeight = armConstraint.weight;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            armConstraint.weight = Mathf.Lerp(startWeight, targetWeight, elapsed / duration);
+            yield return null;
+        }
+
+        armConstraint.weight = targetWeight;
     }
 
     void Sleep()
@@ -97,6 +150,7 @@ public class PlayerInteraction : MonoBehaviour
         else if (!isFading && player.controller.isGrounded)
         {
             StartCoroutine(SleepRoutine());
+            NotificationManager.Instance.ShowNotification($"Sleeping...");
         }
     }
 
