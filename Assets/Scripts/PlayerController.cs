@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public float deceleration = 30f; // Vitesse de freinage
     public float rotationSpeed = 10f; // Vitesse de rotation du joueur pour faire face à sa direction de déplacement
     public float jumpSpeed = 20f; // Vitesse de jump maximale
-    public float speedMultiplier;
+    public float speedMultiplier = 1f;
 
     
     [Header("Air Boost")]
@@ -82,6 +82,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     private PlayerEffects effects;
     private PlayerInteraction interaction;
     public LayerMask groundLayer;
+    public Transform chestBone;
 
     [Header("Animation Settings")]
     public bool animationPause = false;
@@ -196,6 +197,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
         if (velocity.magnitude < stallVelocity || !stats.canFly || !askFly)
         {
+            askFly = false;
             isGliding = false;
             isBraking = false;
         }
@@ -254,7 +256,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         boostDirectionHorizontal = Vector3.Scale(boostDirection, new Vector3(1, 0, 1)).normalized;
 
         Vector3 actualDirection = Vector3.RotateTowards(velocity.normalized, boostDirection, boostRotationSpeed * Time.deltaTime, 0f);
-        float actualSpeed = Mathf.Lerp(velocity.magnitude, airBoostSpeed * speedMultiplier, airBoostAcceleration * Time.deltaTime);
+        float actualSpeed = Mathf.Lerp(velocity.magnitude, airBoostSpeed, airBoostAcceleration * Time.deltaTime);
         actualSpeed = Mathf.Max(actualSpeed, velocity.magnitude);
         velocity = actualDirection * actualSpeed;
         
@@ -373,7 +375,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         }
         velocity = Vector3.ClampMagnitude(velocity, 2*airBoostSpeed);
         velocity = Vector3.ClampMagnitude(velocity, airBoostSpeed);
-        controller.Move(velocity * Time.deltaTime); //Déplacement final
+        controller.Move(velocity * speedMultiplier * Time.deltaTime); //Déplacement final
     }
 
     
@@ -386,6 +388,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         {
             Vector3 bounceDirection = Vector3.Reflect(velocity, hit.normal);
             isCrashed = true;
+            interaction.DropPackage();
             isGliding = false;
             isBoosting = false;
             velocity = bounceDirection * bounciness;

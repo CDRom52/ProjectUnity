@@ -24,10 +24,6 @@ public class PlayerInteraction : MonoBehaviour
     public float fadeDuration = 1.0f;
     private bool isFading = false;
 
-    [Header("IK Arm Rigging")]
-    public TwoBoneIKConstraint armConstraint;
-    public Transform armTarget;
-
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -35,7 +31,6 @@ public class PlayerInteraction : MonoBehaviour
         player = GetComponent<PlayerController>();
         playerStats = GetComponent<PlayerStats>();
         player.speedMultiplier = grabbedNPC != null ? 0.5f : 1f;
-        armConstraint.weight = 0f;
     }
 
     // Update is called once per frame
@@ -74,15 +69,14 @@ public class PlayerInteraction : MonoBehaviour
         if (player.controller.isGrounded && !player.isCrashed)
         {
             Sleep();
-            if (currentCarriedPackage != null)
-            {
-                DropPackage();
-            }
-            else
+            if (currentCarriedPackage == null)
             {
                 TryPickUp();
+                return;
             }
         }
+        if (!player.isCrashed && currentCarriedPackage != null)
+            DropPackage();
     }
 
     void TryPickUp()
@@ -90,21 +84,17 @@ public class PlayerInteraction : MonoBehaviour
         nearbyPackage = GetPackageInFront();
         if (nearbyPackage != null)
         {
-            armConstraint.weight = 1f;
             currentCarriedPackage = nearbyPackage;
-            armTarget.position = currentCarriedPackage.transform.position;
-            armTarget.rotation = currentCarriedPackage.transform.rotation;
-            currentCarriedPackage.StartFollowing(player);
-
+            currentCarriedPackage.AddedTo(player);
+            
             NotificationManager.Instance.ShowNotification($"Package picked up.");
             nearbyPackage = null;
         }
     }
 
-    void DropPackage()
+    public void DropPackage()
     {
         if (currentCarriedPackage == null) return;
-        armConstraint.weight = 0f;
         currentCarriedPackage.Detach();
 
         NotificationManager.Instance.ShowNotification($"Package dropped.");
