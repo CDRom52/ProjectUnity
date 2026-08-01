@@ -81,6 +81,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     private Animator anim;
     private PlayerEffects effects;
     private PlayerInteraction interaction;
+    public LayerMask groundLayer;
 
     [Header("Animation Settings")]
     public bool animationPause = false;
@@ -142,7 +143,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     {
         if (value.isPressed)
         {
-            interaction.OnInteract();
+            interaction.Interacted();
         }
     }
 

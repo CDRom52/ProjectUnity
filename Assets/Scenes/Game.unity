@@ -7145,6 +7145,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 961739753}
     - target: {fileID: 2941008082388494835, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+      propertyPath: groundLayer.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 2941008082388494835, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
       propertyPath: airBoostAcceleration
       value: 20
       objectReference: {fileID: 0}
@@ -7164,6 +7168,10 @@ PrefabInstance:
       propertyPath: armConstraint
       value: 
       objectReference: {fileID: 1366594835}
+    - target: {fileID: 3379000406202037508, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
+      propertyPath: packageLayer.m_Bits
+      value: 2048
+      objectReference: {fileID: 0}
     - target: {fileID: 4352403520438712747, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
       propertyPath: m_ConnectedBody
       value: 

@@ -69,9 +69,8 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
-    public void OnInteract()
+    public void Interacted()
     {
-        Debug.Log("I'VE INTERAAAAAAAACTED");
         if (player.controller.isGrounded && !player.isCrashed)
         {
             Sleep();
@@ -94,7 +93,8 @@ public class PlayerInteraction : MonoBehaviour
             armConstraint.weight = 1f;
             currentCarriedPackage = nearbyPackage;
             armTarget.position = currentCarriedPackage.transform.position;
-            currentCarriedPackage.AttachTo(armTarget);
+            armTarget.rotation = currentCarriedPackage.transform.rotation;
+            currentCarriedPackage.StartFollowing(player);
 
             NotificationManager.Instance.ShowNotification($"Package picked up.");
             nearbyPackage = null;
