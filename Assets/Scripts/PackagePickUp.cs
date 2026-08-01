@@ -30,8 +30,9 @@ public class PackagePickup : MonoBehaviour
         transform.localRotation = Quaternion.identity;
     }
 
-    public void Detach()
+    public void Detach(PlayerController player)
     {
+        player.speedMultiplier = 1f;
         transform.SetParent(originalParent);
 
         if (TryGetComponent<Rigidbody>(out Rigidbody rb))

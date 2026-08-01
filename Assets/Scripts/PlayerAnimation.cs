@@ -81,8 +81,6 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
         anim.SetBool("IsCrashed", player.isCrashed);
         anim.SetBool("IsBraking", player.isBraking);
         anim.SetBool("CanJump", stats.canJump);
-        anim.SetBool("HasCrashed", player.hasCrashed);
-        anim.SetBool("GetUpBack", player.getUpBack);
         anim.SetFloat("Energy", stats.currentEnergy);
     }
 
@@ -108,6 +106,27 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
     {
         float targetPitch = 0f; //tangage (selon X)
         float targetRoll = 0f; //roulis (selon Z)
+
+        if (player.isCrashed)
+        {
+            float speed = player.crashTumbleSpeed * player.velocity.magnitude / player.airBoostSpeed;
+            player.currentCrashPitch += speed * Time.deltaTime; 
+            player.currentCrashRoll += speed * 0.5f * Time.deltaTime;
+
+            targetPitch = player.currentCrashPitch;
+            targetRoll = player.currentCrashRoll;
+
+            Quaternion crashRotation = Quaternion.Euler(targetPitch, 0f, targetRoll);
+            player.playerVisual.localRotation = crashRotation;
+
+            player.lastVelocity = player.velocity;
+            return;
+        }
+        else
+        {
+            player.currentCrashPitch = 0f;
+            player.currentCrashRoll = 0f;
+        }
         
         if (!controller.isGrounded)
         {

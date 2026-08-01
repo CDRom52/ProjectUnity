@@ -51,10 +51,8 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public float currentCrashPitch = 0f;
     public float groundHitSpeed = 100f;
     public float bounciness = 0.5f;
-    public bool hasCrashed;
-    private float getUpTimerDuration = 1f;
-    private float getUpTimer;
-    public bool getUpBack;
+    public float crashTumbleSpeed = 720f; // Degrees per second (720 = 2 full flips per second)
+    public float currentCrashRoll = 0f;
 
     [Header("Braking")]
     public float brakeDrag = 50f;
@@ -96,7 +94,6 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         anim = GetComponentInChildren<Animator>();
         effects = GetComponent<PlayerEffects>();
         interaction = GetComponent<PlayerInteraction>();
-        getUpTimer = getUpTimerDuration;
     }
 
     void OnMove(InputValue movementValue) // Callback appelé quand il y a une entrée de mouvement
@@ -272,19 +269,13 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         else if (velocity.y < 0) //soit on est au sol, ou on vient de toucher le sol
         {
             float horizontalSpeed = new Vector3(velocity.x, 0f, velocity.z).magnitude;
-                if (horizontalSpeed < 0.1f)
-                {
-                    getUpTimer -= Time.deltaTime;
-                    if (getUpTimer <= 0f)
-                    {
-                        getUpTimer = getUpTimerDuration;
-                        isCrashed = false;
-                        hasCrashed = true;
-                    }
-                }
-                float dynamicDecel = deceleration / (1f + horizontalSpeed / maxSpeed);
-                velocity.x = Mathf.Lerp(velocity.x, 0f, dynamicDecel * Time.deltaTime);
-                velocity.z = Mathf.Lerp(velocity.z, 0f, dynamicDecel * Time.deltaTime);
+            if (horizontalSpeed < 5f)
+            {
+                isCrashed = false;
+            }
+            float dynamicDecel = deceleration / (1f + horizontalSpeed / maxSpeed);
+            velocity.x = Mathf.Lerp(velocity.x, 0f, dynamicDecel * Time.deltaTime);
+            velocity.z = Mathf.Lerp(velocity.z, 0f, dynamicDecel * Time.deltaTime);
         }
         controller.Move(velocity * Time.deltaTime);
         return;
@@ -308,10 +299,8 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
     void Update()
     {
-        if (!controller.isGrounded && !isCrashed)
-        {
-            hasCrashed = false;
-        }
+        if (animationPause)
+            return;
         isRunning = controller.isGrounded && isSprinting;
         if (!controller.isGrounded && sprintLastFrame)
         {

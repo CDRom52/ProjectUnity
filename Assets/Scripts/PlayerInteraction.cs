@@ -95,7 +95,7 @@ public class PlayerInteraction : MonoBehaviour
     public void DropPackage()
     {
         if (currentCarriedPackage == null) return;
-        currentCarriedPackage.Detach();
+        currentCarriedPackage.Detach(player);
 
         NotificationManager.Instance.ShowNotification($"Package dropped.");
         currentCarriedPackage = null;
