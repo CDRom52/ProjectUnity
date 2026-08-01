@@ -24,11 +24,6 @@ public class PackagePickup : MonoBehaviour
         {
             rb.isKinematic = true;
         }
-
-        if (packageCollider != null)
-        {
-            packageCollider.isTrigger = true;
-        }
     }
 
     public void Detach()
@@ -38,11 +33,6 @@ public class PackagePickup : MonoBehaviour
         if (rb != null)
         {
             rb.isKinematic = false;
-        }
-
-        if (packageCollider != null)
-        {
-            packageCollider.isTrigger = false;
         }
     }
 }

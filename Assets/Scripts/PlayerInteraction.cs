@@ -6,14 +6,13 @@ public class PlayerInteraction : MonoBehaviour
 {
     private PlayerController player;
     private NPCController grabbedNPC;
-    private Transform playerVisual;
-    private PlayerAnimation playerAnimation;
     private PlayerStats playerStats;
-    public PlayerInventory inventory;
 
     [Header("Pick Up Package")]
     public PackagePickup nearbyPackage;
     private PackagePickup currentCarriedPackage;
+    public LayerMask packageLayer;
+    public float headHeight = 0.5f;
 
     [Header("Camp")]
     private GameObject camp;
@@ -34,7 +33,6 @@ public class PlayerInteraction : MonoBehaviour
     void Start()
     {
         player = GetComponent<PlayerController>();
-        playerAnimation = GetComponent<PlayerAnimation>();
         playerStats = GetComponent<PlayerStats>();
         player.speedMultiplier = grabbedNPC != null ? 0.5f : 1f;
         armConstraint.weight = 0f;
@@ -73,6 +71,7 @@ public class PlayerInteraction : MonoBehaviour
 
     public void OnInteract()
     {
+        Debug.Log("I'VE INTERAAAAAAAACTED");
         if (player.controller.isGrounded && !player.isCrashed)
         {
             Sleep();
@@ -89,16 +88,13 @@ public class PlayerInteraction : MonoBehaviour
 
     void TryPickUp()
     {
+        nearbyPackage = GetPackageInFront();
         if (nearbyPackage != null)
         {
+            armConstraint.weight = 1f;
             currentCarriedPackage = nearbyPackage;
-
             armTarget.position = currentCarriedPackage.transform.position;
-
             currentCarriedPackage.AttachTo(armTarget);
-
-            StopAllCoroutines();
-            StartCoroutine(BlendIKWeight(1f));
 
             NotificationManager.Instance.ShowNotification($"Package picked up.");
             nearbyPackage = null;
@@ -108,35 +104,13 @@ public class PlayerInteraction : MonoBehaviour
     void DropPackage()
     {
         if (currentCarriedPackage == null) return;
-
-        // 1. Tell the package to detach itself
+        armConstraint.weight = 0f;
         currentCarriedPackage.Detach();
 
         NotificationManager.Instance.ShowNotification($"Package dropped.");
         currentCarriedPackage = null;
-
-        // 2. Return arm animation back to normal
-        StopAllCoroutines();
-        StartCoroutine(BlendIKWeight(0f));
     }
 
-    private IEnumerator BlendIKWeight(float targetWeight)
-    {
-        if (armConstraint == null) yield break;
-
-        float duration = 0.25f;
-        float elapsed = 0f;
-        float startWeight = armConstraint.weight;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            armConstraint.weight = Mathf.Lerp(startWeight, targetWeight, elapsed / duration);
-            yield return null;
-        }
-
-        armConstraint.weight = targetWeight;
-    }
 
     void Sleep()
     {
@@ -221,20 +195,25 @@ public class PlayerInteraction : MonoBehaviour
         fadeGroup.alpha = targetAlpha;
     }
 
-    private void OnTriggerEnter(Collider other)
+    public PackagePickup GetPackageInFront()
     {
-        if (other.TryGetComponent<PackagePickup>(out var package))
-        {
-            nearbyPackage = package;
-            Debug.Log($"Near package: {package.data.packageName}. Press E to pick up.");
-        }
-    }
+        float reachDistance = 3.0f;
+        Vector3 origin = transform.position + Vector3.up * headHeight;
+        Vector3 direction = player.cameraTransform.forward;
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.TryGetComponent<PackagePickup>(out var package) && package == nearbyPackage)
+        if (Physics.SphereCast(origin, 0.5f, direction, out RaycastHit hit, reachDistance, packageLayer))
         {
-            nearbyPackage = null;
+            Debug.DrawRay(origin, direction * hit.distance, Color.green, 1.0f);
+            if (hit.collider.TryGetComponent<PackagePickup>(out var package))
+            {
+                return package;
+            }
         }
-    } 
+        else
+        {
+            Debug.DrawRay(origin, direction * reachDistance, Color.red, 1.0f);
+        }
+
+        return null;
+    }
 }

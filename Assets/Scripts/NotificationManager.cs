@@ -36,10 +36,6 @@ public class NotificationManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Call this function from any script to display a typewriter message.
-    /// Example: NotificationManager.Instance.ShowNotification("Package picked up!");
-    /// </summary>
     public void ShowNotification(string message)
     {
         // If a message is currently typing or waiting, stop it before starting a new one

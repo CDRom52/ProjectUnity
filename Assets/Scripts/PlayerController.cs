@@ -390,7 +390,6 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             velocity = bounceDirection * bounciness;
             if (hit.gameObject.layer == 6)
                 effects.HandleCollision(hit);
-            Debug.Log("CRAAAAAAAAAAAAASHH");
             NotificationManager.Instance.ShowNotification($"You crashed.");
         }
     }
