@@ -151,7 +151,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
     void OnAttack(InputValue value)
     {
-        isShooting = value.isPressed;
+        // isShooting = value.isPressed;
     }
 
     void Jump()

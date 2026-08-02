@@ -3,13 +3,16 @@ using UnityEngine;
 public class PackagePickup : MonoBehaviour
 {
     [Header("References")]
-    public PackageData data;
     public Transform originalParent;
 
+    [Header("Delivery Info")]
+    public int destinationPlatformID;
+    public bool isDelivered = false;
 
-
-   void LateUpdate()
+    public void SetupPackage(int targetID, Vector3 targetScale)
     {
+        destinationPlatformID = targetID;
+        transform.localScale = targetScale;
     }
 
     public void AddedTo(PlayerController player)
@@ -43,5 +46,14 @@ public class PackagePickup : MonoBehaviour
         {
             col.isTrigger = false;
         }
+    }
+
+    public void DeliverPackage()
+    {
+        if (isDelivered) return;
+
+        isDelivered = true;
+
+        NotificationManager.Instance.ShowNotification($"Package delivered.");
     }
 }
