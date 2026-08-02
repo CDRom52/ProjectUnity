@@ -71,6 +71,10 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public bool isCrashed = false;
     public bool askFly = false;
 
+    [Header("Shooting")]
+    public bool isShooting = false;
+
+
     [Header("References")]
     public CharacterController controller; // Référence au CharacterController du joueur
     public Transform playerVisual; // Référence au Transform du modèle 3D du joueur
@@ -143,6 +147,11 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         {
             interaction.Interacted();
         }
+    }
+
+    void OnAttack(InputValue value)
+    {
+        isShooting = value.isPressed;
     }
 
     void Jump()
