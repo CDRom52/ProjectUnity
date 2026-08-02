@@ -45,6 +45,13 @@ public class CameraController : MonoBehaviour
     public float fxInSpeed = 2f;
     public float fxOutSpeed = 3f;
 
+    [Header("Shake Parameters")]
+    public float maxShakeAmount = 0.2f;
+    public float shakeFrequency = 25f;
+    private Vector3 currentShakeOffset;
+    public float shakeInSpeed = 15f;
+    public float shakeOutSpeed = 10f;
+
     [Header("References")]
     public Transform player;
     public PlayerController playerScript;
@@ -115,30 +122,25 @@ public class CameraController : MonoBehaviour
 
         HandleOffset();
 
+        HandleShake();
+
         Vector3 headPosition = ActiveTarget.position + Vector3.up * height;
         Vector3 fullOffset = rotation * new Vector3(offset, 0f, -distance);
         Vector3 desiredPosition = headPosition + fullOffset;
 
-        // 2. Check for obstacles between the player's head and the desired position
         float actualDistance = distance;
         Vector3 rayDirection = desiredPosition - headPosition;
 
-        // We use a SphereCast to give the camera "thickness" so it doesn't clip through edges
         if (Physics.SphereCast(headPosition, collisionRadius, rayDirection.normalized, out RaycastHit hit, distance, collisionMask))
         {
-            // If we hit anything (wall, ceiling, ground), pull the camera in
-            // We subtract a small buffer (0.1f) so the camera doesn't sit exactly on the surface
             actualDistance = Mathf.Clamp(hit.distance - 0.1f, 0.5f, distance);
         }
 
-        // 3. Final Position Calculation
         Vector3 finalOffset = rotation * new Vector3(offset, 0f, -actualDistance);
         Vector3 basePosition = headPosition + finalOffset;
 
-        // 4. Apply the position with your existing Shake
-        transform.position = basePosition;
+        transform.position = basePosition + (rotation * currentShakeOffset);
 
-        // 5. Look at target (centered on player's head/shoulder)
         Vector3 lookAtTarget = headPosition + rotation * Vector3.right * offset;
         transform.LookAt(lookAtTarget);
     }
@@ -149,7 +151,7 @@ public class CameraController : MonoBehaviour
 
         if (!playerScript.controller.isGrounded)
         {
-            float currentSpeed = new Vector3(playerScript.velocity.x, 0, playerScript.velocity.z).magnitude;
+            float currentSpeed = playerScript.velocity.magnitude;
             float speedPercent = Mathf.Clamp01(currentSpeed / playerScript.airBoostSpeed);
 
             targetFOV = Mathf.Lerp(baseFOV, maxFOV, speedPercent); 
@@ -167,5 +169,25 @@ public class CameraController : MonoBehaviour
         else
             targetOffset = normalOffset;
         offset = Mathf.Lerp(offset, targetOffset, playerScript.tiltSpeed*Time.deltaTime);
+    }
+
+    void HandleShake()
+    {
+        if (playerScript.isBoosting)
+        {
+            float speedFactor = Mathf.InverseLerp(0f, playerScript.airBoostSpeed, playerScript.velocity.magnitude);
+
+            float seed = Time.time * shakeFrequency;
+            float offsetX = (Mathf.PerlinNoise(seed, 0f) - 0.5f) * 2f;
+            float offsetY = (Mathf.PerlinNoise(0f, seed) - 0.5f) * 2f;
+
+            Vector3 targetShake = new Vector3(offsetX, offsetY, 0f) * (maxShakeAmount * speedFactor);
+            
+            currentShakeOffset = Vector3.Lerp(currentShakeOffset, targetShake, Time.deltaTime * shakeInSpeed);
+        }
+        else
+        {
+            currentShakeOffset = Vector3.Lerp(currentShakeOffset, Vector3.zero, Time.deltaTime * shakeOutSpeed);
+        }
     }
 }

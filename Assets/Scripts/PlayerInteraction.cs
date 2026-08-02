@@ -66,17 +66,25 @@ public class PlayerInteraction : MonoBehaviour
 
     public void Interacted()
     {
-        if (player.controller.isGrounded && !player.isCrashed)
+        if (camp!=null && player.controller.isGrounded && !player.isCrashed)
         {
-            Sleep();
-            if (currentCarriedPackage == null)
+            float distanceToCamp = Vector3.Distance(transform.position, camp.transform.position);
+            if (distanceToCamp < maxDistanceToCamp && !isFading && player.controller.isGrounded)
             {
-                TryPickUp();
+                Sleep();
                 return;
             }
         }
-        if (!player.isCrashed && currentCarriedPackage != null)
-            DropPackage();
+        if (!player.isCrashed)
+        {
+            if (currentCarriedPackage == null)
+            {
+                TryPickUp();
+            }
+            else
+                DropPackage();
+        }
+            
     }
 
     void TryPickUp()
@@ -104,18 +112,8 @@ public class PlayerInteraction : MonoBehaviour
 
     void Sleep()
     {
-        if (camp == null)
-            return;
-        float distanceToCamp = Vector3.Distance(transform.position, camp.transform.position);
-        if (distanceToCamp > maxDistanceToCamp) 
-        {
-            Debug.Log("Too far from camp to sleep!");
-        }
-        else if (!isFading && player.controller.isGrounded)
-        {
-            StartCoroutine(SleepRoutine());
-            NotificationManager.Instance.ShowNotification($"Sleeping...");
-        }
+        StartCoroutine(SleepRoutine());
+        NotificationManager.Instance.ShowNotification($"Sleeping...");
     }
 
     void SetCamp()

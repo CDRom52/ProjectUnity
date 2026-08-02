@@ -6591,7 +6591,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9144503533193396904, guid: baf77c60a75c172489bc41013d3f7baa, type: 3}
       propertyPath: fxOutSpeed
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9144503533193396904, guid: baf77c60a75c172489bc41013d3f7baa, type: 3}
       propertyPath: speedVolume
@@ -6684,7 +6684,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2941008082388494835, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
       propertyPath: groundHitSpeed
-      value: 100
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 2941008082388494835, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
       propertyPath: brakePitchAngle
