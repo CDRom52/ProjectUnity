@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerAttack : MonoBehaviour
 {
     private PlayerController player;
+    private Animator anim;
 
     [Header("Punch Settings")]
     public float punchRange = 2.5f;
@@ -13,10 +14,12 @@ public class PlayerAttack : MonoBehaviour
     void Start()
     {
         player = GetComponent<PlayerController>();
+        anim = GetComponentInChildren<Animator>();
     }
 
     public void Attack()
     {
+        anim.SetTrigger("Punch");
         Vector3 punchOrigin = transform.position + transform.forward * (punchRange * 0.5f);
         Collider[] hitColliders = Physics.OverlapSphere(punchOrigin, punchRange, npcLayerMask);
 
