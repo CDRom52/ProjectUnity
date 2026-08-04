@@ -8,7 +8,6 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
     public PlayerController player;
     public PlayerStats stats;
     public LayerMask groundMask;
-    public GameObject backpackPrefab;
 
     [Header("Idle Settings")]
     public float idleBreakDelay = 10f;
@@ -34,7 +33,7 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
     void Update()
     {
         //QUAND ON NE PEUT RIEN FAIRE (atterrissage)
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("GetUpFront") || anim.GetCurrentAnimatorStateInfo(0).IsName("Land"))
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("GetUpFront"))
         {
             player.animationPause = true;
         }
@@ -102,7 +101,7 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
         float targetPitch = 0f; //tangage (selon X)
         float targetRoll = 0f; //roulis (selon Z)
 
-        if (player.isCrashed)
+        if (player.isCrashed && !controller.isGrounded)
         {
             float speed = player.crashTumbleSpeed * player.velocity.magnitude / player.airBoostSpeed;
             player.currentCrashPitch += speed * Time.deltaTime; 

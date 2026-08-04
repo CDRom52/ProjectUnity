@@ -97,6 +97,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         anim = GetComponentInChildren<Animator>();
         effects = GetComponent<PlayerEffects>();
         interaction = GetComponent<PlayerInteraction>();
+        attack = GetComponent<PlayerAttack>();
     }
 
     void OnMove(InputValue movementValue) // Callback appelé quand il y a une entrée de mouvement
@@ -152,7 +153,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     {
         if (value.isPressed && controller.isGrounded && !isCrashed && !animationPause)
         {
-            // attack.Attack();
+            attack.Attack();
         }
     }
 
