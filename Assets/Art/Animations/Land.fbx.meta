@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9f7eb6b1e2db6ee41910c995a9f92247
+guid: 699b371646d1c3346acc00db915a6c83
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -41,7 +41,7 @@ ModelImporter:
       lastFrame: 32
       wrapMode: 0
       orientationOffsetY: 0
-      level: 0.3
+      level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
@@ -260,13 +260,13 @@ ModelImporter:
         length: 0
         modified: 0
     skeleton:
-    - name: Land(Clone)
+    - name: Landing(Clone)
       parentName: 
       position: {x: 0.06080253, y: 0.5960189, z: 0.32879502}
       rotation: {x: -0.78984505, y: 0.2675763, z: 0.1624492, w: 0.52740693}
       scale: {x: 100, y: 100, z: 100}
     - name: Hips
-      parentName: Land(Clone)
+      parentName: Landing(Clone)
       position: {x: 0.0014289076, y: 0.002989257, z: 0.00073513953}
       rotation: {x: 0.6901822, y: -0.1730284, z: -0.22832036, w: 0.66451454}
       scale: {x: 1, y: 1, z: 1}
@@ -283,11 +283,11 @@ ModelImporter:
     - name: Neck
       parentName: Chest
       position: {x: -0, y: 0.002, z: 0}
-      rotation: {x: -0.22461174, y: -0.051288754, z: -0.0055027097, w: 0.9730821}
+      rotation: {x: -0.224611, y: -0.051288925, z: -0.0055027013, w: 0.97308224}
       scale: {x: 1, y: 1, z: 1}
     - name: Head
       parentName: Neck
-      position: {x: -0, y: 0.00055, z: 0}
+      position: {x: -0, y: 0.000677, z: 0}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: ShoulderConnector.L

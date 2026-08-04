@@ -1,9 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using NUnit.Framework;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe de script attachés à objet)
 {
@@ -39,7 +34,7 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
     void Update()
     {
         //QUAND ON NE PEUT RIEN FAIRE (atterrissage)
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("GetUpFront"))
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("GetUpFront") || anim.GetCurrentAnimatorStateInfo(0).IsName("Land"))
         {
             player.animationPause = true;
         }

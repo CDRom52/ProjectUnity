@@ -22,7 +22,7 @@ public class PlayerShooting : MonoBehaviour
 
     void Update()
     {
-        bool shouldAim = player.isShooting;
+        bool shouldAim = false;
 
         float targetWeight = shouldAim ? 1f : 0f;
         armConstraint.weight = Mathf.Lerp(armConstraint.weight, targetWeight, Time.deltaTime * ikSpeed);

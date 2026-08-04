@@ -1,11 +1,9 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.Animations.Rigging;
 
 public class PlayerInteraction : MonoBehaviour
 {
     private PlayerController player;
-    private NPCController grabbedNPC;
     private PlayerStats playerStats;
 
     [Header("Pick Up Package")]
@@ -25,15 +23,12 @@ public class PlayerInteraction : MonoBehaviour
     private bool isFading = false;
 
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         player = GetComponent<PlayerController>();
         playerStats = GetComponent<PlayerStats>();
-        player.speedMultiplier = grabbedNPC != null ? 0.5f : 1f;
     }
 
-    // Update is called once per frame
     void Update()
     {
         
@@ -93,6 +88,7 @@ public class PlayerInteraction : MonoBehaviour
         if (nearbyPackage != null)
         {
             currentCarriedPackage = nearbyPackage;
+            player.speedMultiplier = 0.5f;
             currentCarriedPackage.AddedTo(player);
             
             NotificationManager.Instance.ShowNotification($"Package picked up.");
@@ -104,6 +100,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (currentCarriedPackage == null) return;
         currentCarriedPackage.Detach(player);
+        player.speedMultiplier = 1f;
 
         NotificationManager.Instance.ShowNotification($"Package dropped.");
         currentCarriedPackage = null;

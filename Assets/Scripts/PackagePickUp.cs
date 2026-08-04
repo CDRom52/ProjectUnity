@@ -17,7 +17,6 @@ public class PackagePickup : MonoBehaviour
 
     public void AddedTo(PlayerController player)
     {
-        player.speedMultiplier = 0.5f;
         if (TryGetComponent<Rigidbody>(out Rigidbody rb))
         {
             rb.isKinematic = true;
@@ -35,7 +34,6 @@ public class PackagePickup : MonoBehaviour
 
     public void Detach(PlayerController player)
     {
-        player.speedMultiplier = 1f;
         transform.SetParent(originalParent);
 
         if (TryGetComponent<Rigidbody>(out Rigidbody rb))

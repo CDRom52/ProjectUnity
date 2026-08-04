@@ -12,7 +12,7 @@ public class CameraController : MonoBehaviour
     public float sensitivity = 2f;
     public float offset = 0.5f; // Négatif pour la gauche, positif pour la droite
     public float normalOffset = 0.5f; // Négatif pour la gauche, positif pour la droite
-    public float targetOffset = 0.5f; // Négatif pour la gauche, positif pour la droite
+    private float targetOffset = 0.5f; // Négatif pour la gauche, positif pour la droite
     public float maxOffset = 1f;
     private float yaw = 0f; //Lacet : rotation autour de l'axe Y
     private float pitch = 20f; //Tangage : rotation autour de l'axe X

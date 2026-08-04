@@ -4,6 +4,7 @@ using NUnit.Framework;
 using Unity.Collections;
 using Unity.Multiplayer.Center.Common.Analytics;
 using Unity.VisualScripting;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -71,9 +72,6 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public bool isCrashed = false;
     public bool askFly = false;
 
-    [Header("Shooting")]
-    public bool isShooting = false;
-
 
     [Header("References")]
     public CharacterController controller; // Référence au CharacterController du joueur
@@ -85,6 +83,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     private PlayerInteraction interaction;
     public LayerMask groundLayer;
     public Transform chestBone;
+    private PlayerAttack attack;
 
     [Header("Animation Settings")]
     public bool animationPause = false;
@@ -151,7 +150,10 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
     void OnAttack(InputValue value)
     {
-        // isShooting = value.isPressed;
+        if (value.isPressed && controller.isGrounded && !isCrashed && !animationPause)
+        {
+            // attack.Attack();
+        }
     }
 
     void Jump()
@@ -285,29 +287,24 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             velocity.z = Mathf.Lerp(velocity.z, 0f, dynamicDecel * Time.deltaTime);
         }
         controller.Move(velocity * Time.deltaTime);
-        return;
     }
 
     void Transition()
     {
-        if (!controller.isGrounded || isBusy) //soit on est en air time
+        if (!controller.isGrounded) //soit on est en air time
             velocity.y += gravity * Time.deltaTime;
         else if (velocity.y < 0) //soit on est au sol, ou on vient de toucher le sol
         {
-            velocity.y = groundGravity;
             float horizontalSpeed = new Vector3(velocity.x, 0f, velocity.z).magnitude;
             float dynamicDecel = deceleration / (1f + horizontalSpeed / maxSpeed);
             velocity.x = Mathf.Lerp(velocity.x, 0f, dynamicDecel * Time.deltaTime);
             velocity.z = Mathf.Lerp(velocity.z, 0f, dynamicDecel * Time.deltaTime);
         }
         controller.Move(velocity * Time.deltaTime);
-        return;
     }
 
     void Update()
     {
-        if (animationPause)
-            return;
         isRunning = controller.isGrounded && isSprinting;
         if (!controller.isGrounded && sprintLastFrame)
         {
@@ -321,13 +318,15 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         sprintLastFrame = false;
         
         //QUAND ON NE PEUT RIEN FAIRE (atterrissage, crash)
-        if (animationPause) //pour les animations
-        {
-            Transition();
-        }
-        else if (isCrashed)
+        if (isCrashed)
         {
             Crash();
+            return;
+        }
+        else if (animationPause)
+        {
+            Transition();
+            return;
         }
         
         //ACTIONS QUI COÛTENT DE LA STAMINA (boost)
@@ -355,7 +354,6 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         //Gravité
         ApplyGravity();
 
-
         //ACTIONS SANS STAMINA (mouvement au sol, saut, planer)
         if (controller.isGrounded) // soit on est au sol
         {
@@ -370,7 +368,6 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             Glide();
         }
         velocity = Vector3.ClampMagnitude(velocity, 2*airBoostSpeed);
-        velocity = Vector3.ClampMagnitude(velocity, airBoostSpeed);
         controller.Move(velocity * speedMultiplier * Time.deltaTime); //Déplacement final
     }
 
