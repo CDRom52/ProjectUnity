@@ -378,7 +378,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
-    {
+    {   
         float speed = velocity.magnitude;
         float downwardOrientation = Vector3.Dot(velocity.normalized, Vector3.down);
         if (speed > groundHitSpeed && downwardOrientation < 1) //Si on va assez vite (pas pour un atterrisage normal) et que on ne va pas directement vers le bas
@@ -391,7 +391,6 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             velocity = bounceDirection * bounciness;
             if (hit.gameObject.layer == 6)
                 effects.HandleCollision(hit);
-            NotificationManager.Instance.ShowNotification($"You crashed.");
         }
     }
 }

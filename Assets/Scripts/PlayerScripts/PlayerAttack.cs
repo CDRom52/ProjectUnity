@@ -8,7 +8,6 @@ public class PlayerAttack : MonoBehaviour
 
     [Header("Punch Settings")]
     public float punchRange = 2.5f;
-    public float punchAngle = 60f;
     public float knockbackForce = 25f;
     public LayerMask npcLayerMask;
     private int upperBodyLayerIndex;
@@ -29,15 +28,8 @@ public class PlayerAttack : MonoBehaviour
 
     public void Attack()
     {
-        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(upperBodyLayerIndex);
-
-        bool isRightPunching = stateInfo.IsName(rightPunchStateName);
-        bool isLeftPunching = stateInfo.IsName(leftPunchStateName);
-
-        if (isRightPunching || isLeftPunching || animator.IsInTransition(upperBodyLayerIndex))
-        {
+        if (animator.IsInTransition(upperBodyLayerIndex))
             return;
-        }
 
         animator.SetTrigger("Punch");
         player.punchLeft = !player.punchLeft;
@@ -54,15 +46,10 @@ public class PlayerAttack : MonoBehaviour
 
         foreach (Collider hitCollider in hitColliders)
         {
-            Vector3 directionToTarget = (hitCollider.transform.position - transform.position).normalized;
-
-            if (Vector3.Angle(transform.forward, directionToTarget) < punchAngle / 2f)
+            if (hitCollider.TryGetComponent<NPCController>(out NPCController npc))
             {
-                if (hitCollider.TryGetComponent<NPCController>(out NPCController npc))
-                {
-                    Vector3 knockbackDir = (hitCollider.transform.position - transform.position).normalized;
-                    npc.Impact(knockbackDir, knockbackForce);
-                }
+                Vector3 knockbackDir = (hitCollider.transform.position - transform.position).normalized;
+                npc.Impact(knockbackDir, knockbackForce);
             }
         }
     }
