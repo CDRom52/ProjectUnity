@@ -6214,6 +6214,11 @@ MonoBehaviour:
   npcLayerMask:
     serializedVersion: 2
     m_Bits: 256
+  punchTriggerName: Punch
+  upperBodyLayerName: UpperBody
+  rightPunchStateName: PunchR
+  leftPunchStateName: PunchL
+  hitDelay: 0.3
 --- !u!1 &2049622494
 GameObject:
   m_ObjectHideFlags: 0

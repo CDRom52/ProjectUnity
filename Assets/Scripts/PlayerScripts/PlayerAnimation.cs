@@ -76,6 +76,7 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
         anim.SetBool("IsBraking", player.isBraking);
         anim.SetBool("CanJump", stats.canJump);
         anim.SetFloat("Energy", stats.currentEnergy);
+        anim.SetBool("PunchLeft", player.punchLeft);
     }
 
     void HandleIdleTimer()

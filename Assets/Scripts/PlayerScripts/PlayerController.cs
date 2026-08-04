@@ -72,6 +72,9 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public bool isCrashed = false;
     public bool askFly = false;
 
+    [Header("Attack")]
+    public bool punchLeft = false;
+
 
     [Header("References")]
     public CharacterController controller; // Référence au CharacterController du joueur
