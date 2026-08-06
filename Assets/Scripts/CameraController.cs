@@ -173,7 +173,7 @@ public class CameraController : MonoBehaviour
 
     void HandleShake()
     {
-        if (playerScript.isBoosting)
+        if (playerScript.isBoosting || playerScript.isCrashed)
         {
             float speedFactor = Mathf.InverseLerp(0f, playerScript.airBoostSpeed, playerScript.velocity.magnitude);
 

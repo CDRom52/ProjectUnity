@@ -4,71 +4,84 @@ using UnityEngine;
 public class DeliverySystemManager : MonoBehaviour
 {
     [System.Serializable]
-    public struct PlatformData
+    public struct CampsiteData
     {
-        public Vector3 spawnPosition;
-        public Vector3 scale;
-    }
+        [Header("Campsite Setup")]
+        public Vector3 position;
+        
+        [Header("Package Configuration")]
+        public Vector3 packageScale;
+        
+        public int targetCampsiteIndex;
 
-    [System.Serializable]
-    public struct PackageData
-    {
-        public Vector3 spawnPosition;
-        public Vector3 scale;
-        public int targetPlatformIndex;
+        [Header("Local Offsets")]
+        public Vector3 packageOffset; 
+        public Vector3 platformOffset;
     }
 
     [Header("Prefabs")]
+    public GameObject campsitePrefab;
     public GameObject platformPrefab;
     public GameObject packagePrefab;
 
     [Header("Level Data Setup")]
-    public List<PlatformData> platformsToSpawn = new List<PlatformData>();
-    public List<PackageData> packagesToSpawn = new List<PackageData>();
-    public List<int> createdPlatformIDs = new List<int>();
+    public List<CampsiteData> campsitesToSpawn = new List<CampsiteData>();
+
+    private List<GameObject> spawnedCampsites = new List<GameObject>();
+    private List<PlatformManager> spawnedPlatforms = new List<PlatformManager>();
 
     private void Start()
     {
-        SpawnPlatforms();
-        SpawnPackages();
+        SpawnAllCampsites();
     }
 
-    void SpawnPlatforms()
+    void SpawnAllCampsites()
     {
-        for (int i = 0; i < platformsToSpawn.Count; i++)
-        {
-            PlatformData pData = platformsToSpawn[i];
-            int autoID = i + 1;
+        CreateCampsitePlatform();
+        CreatePackages();
+    }
 
-            GameObject platformObj = Instantiate(platformPrefab, pData.spawnPosition, Quaternion.identity, transform);
-            platformObj.transform.localScale = pData.scale;
+    private void CreateCampsitePlatform()
+    {
+        for (int i = 0; i < campsitesToSpawn.Count; i++)
+        {
+            CampsiteData data = campsitesToSpawn[i];
+            int campsiteID = i + 1;
+
+            GameObject campsiteObj = Instantiate(campsitePrefab, data.position, Quaternion.identity, transform);
+            campsiteObj.name = $"Campsite_{campsiteID}";
+            spawnedCampsites.Add(campsiteObj);
+
+            Vector3 platformWorldPos = data.position + data.platformOffset;
+            GameObject platformObj = Instantiate(platformPrefab, platformWorldPos, Quaternion.identity, campsiteObj.transform);
 
             if (platformObj.TryGetComponent<PlatformManager>(out PlatformManager platformScript))
             {
-                platformScript.SetupPlatform(autoID);
+                platformScript.SetupPlatform(campsiteID);
+                spawnedPlatforms.Add(platformScript);
             }
-
-            createdPlatformIDs.Add(autoID);
         }
     }
 
-    void SpawnPackages()
+    private void CreatePackages()
     {
-        for (int i = 0; i < packagesToSpawn.Count; i++)
+        for (int i = 0; i < campsitesToSpawn.Count; i++)
         {
-            PackageData pkgData = packagesToSpawn[i];
+            CampsiteData data = campsitesToSpawn[i];
+            GameObject parentCampsite = spawnedCampsites[i];
 
             int targetID = 1;
-            if (pkgData.targetPlatformIndex >= 0 && pkgData.targetPlatformIndex < createdPlatformIDs.Count)
+            if (data.targetCampsiteIndex >= 0 && data.targetCampsiteIndex < campsitesToSpawn.Count)
             {
-                targetID = createdPlatformIDs[pkgData.targetPlatformIndex];
+                targetID = data.targetCampsiteIndex + 1; 
             }
 
-            GameObject packageObj = Instantiate(packagePrefab, pkgData.spawnPosition, Quaternion.identity, transform);
+            Vector3 packageWorldPos = data.position + (data.packageOffset == Vector3.zero ? new Vector3(0, 0.5f, 0) : data.packageOffset);
+            GameObject packageObj = Instantiate(packagePrefab, packageWorldPos, Quaternion.identity, parentCampsite.transform);
 
             if (packageObj.TryGetComponent<PackagePickup>(out PackagePickup packageScript))
             {
-                packageScript.SetupPackage(targetID, pkgData.scale);
+                packageScript.SetupPackage(targetID, data.packageScale);
             }
         }
     }

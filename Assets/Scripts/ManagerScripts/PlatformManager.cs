@@ -14,7 +14,7 @@ public class PlatformManager : MonoBehaviour
     {
         if (other.TryGetComponent<PackagePickup>(out PackagePickup package))
         {
-            if (package.destinationPlatformID == platformID && !package.isDelivered)
+            if (package.destinationPlatformID == platformID && !package.isDelivered && !package.isCarried)
             {
                 package.DeliverPackage();
             }

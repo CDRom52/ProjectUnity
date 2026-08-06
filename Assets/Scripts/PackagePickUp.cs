@@ -8,6 +8,7 @@ public class PackagePickup : MonoBehaviour
     [Header("Delivery Info")]
     public int destinationPlatformID;
     public bool isDelivered = false;
+    public bool isCarried = false;
 
     public void SetupPackage(int targetID, Vector3 targetScale)
     {
@@ -17,6 +18,7 @@ public class PackagePickup : MonoBehaviour
 
     public void AddedTo(PlayerController player)
     {
+        isCarried = true;
         if (TryGetComponent<Rigidbody>(out Rigidbody rb))
         {
             rb.isKinematic = true;
@@ -34,6 +36,7 @@ public class PackagePickup : MonoBehaviour
 
     public void Detach(PlayerController player)
     {
+        isCarried = false;
         transform.SetParent(originalParent);
 
         if (TryGetComponent<Rigidbody>(out Rigidbody rb))
