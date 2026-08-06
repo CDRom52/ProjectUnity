@@ -4,16 +4,13 @@ using TMPro;
 
 public class NotificationManager : MonoBehaviour
 {
-    // Singleton instance for easy access from any script
     public static NotificationManager Instance;
 
     [Header("UI Reference")]
     public TextMeshProUGUI notificationText;
 
     [Header("Typewriter Settings")]
-    [Tooltip("Time in seconds between each letter appearing")]
     public float typingSpeed = 0.04f;
-    [Tooltip("How long the message stays on screen after finishing typing")]
     public float displayDuration = 2.0f;
 
     private Coroutine activeCoroutine;
@@ -29,7 +26,6 @@ public class NotificationManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        // Make sure text starts empty
         if (notificationText != null)
         {
             notificationText.text = "";
@@ -38,7 +34,6 @@ public class NotificationManager : MonoBehaviour
 
     public void ShowNotification(string message)
     {
-        // If a message is currently typing or waiting, stop it before starting a new one
         if (activeCoroutine != null)
         {
             StopCoroutine(activeCoroutine);
@@ -51,17 +46,14 @@ public class NotificationManager : MonoBehaviour
     {
         notificationText.text = "";
 
-        // Type letter by letter
         foreach (char letter in message.ToCharArray())
         {
             notificationText.text += letter;
             yield return new WaitForSeconds(typingSpeed);
         }
 
-        // Wait for the message to be read
         yield return new WaitForSeconds(displayDuration);
 
-        // Clear the text
         notificationText.text = "";
         activeCoroutine = null;
     }

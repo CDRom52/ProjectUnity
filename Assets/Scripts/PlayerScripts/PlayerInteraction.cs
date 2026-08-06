@@ -9,8 +9,15 @@ public class PlayerInteraction : MonoBehaviour
     [Header("Pick Up Package")]
     public PackagePickup nearbyPackage;
     private PackagePickup currentCarriedPackage;
-    public LayerMask packageLayer;
+
+    [Header("Interaction Settings")]
     public float headHeight = 0.5f;
+    public float reachDistance = 3.0f;
+    public float sphereRadius = 0.5f;
+    public LayerMask interactableLayers;
+
+    [Header("Dialogue")]
+    public NPCDialogue nearbyNPC;
 
     [Header("Camp")]
     private GameObject camp;
@@ -72,19 +79,32 @@ public class PlayerInteraction : MonoBehaviour
         }
         if (!player.isCrashed)
         {
-            if (currentCarriedPackage == null)
+            if (TryDialogue())
+                return;
+            else if (currentCarriedPackage == null)
             {
                 TryPickUp();
             }
             else
                 DropPackage();
         }
-            
+    }
+
+    private bool TryDialogue()
+    {
+        nearbyNPC = GetThingInFront<NPCDialogue>();
+        if (nearbyNPC != null)
+        {
+            nearbyNPC.Interact();
+            player.isTalking = true;
+            return true;
+        }
+        return false;
     }
 
     void TryPickUp()
     {
-        nearbyPackage = GetPackageInFront();
+        nearbyPackage = GetThingInFront<PackagePickup>();
         if (nearbyPackage != null)
         {
             currentCarriedPackage = nearbyPackage;
@@ -180,18 +200,17 @@ public class PlayerInteraction : MonoBehaviour
         fadeGroup.alpha = targetAlpha;
     }
 
-    public PackagePickup GetPackageInFront()
+    public T GetThingInFront<T>() where T : Component
     {
-        float reachDistance = 3.0f;
         Vector3 origin = transform.position + Vector3.up * headHeight;
         Vector3 direction = player.cameraTransform.forward;
 
-        if (Physics.SphereCast(origin, 0.5f, direction, out RaycastHit hit, reachDistance, packageLayer))
+        if (Physics.SphereCast(origin, sphereRadius, direction, out RaycastHit hit, reachDistance, interactableLayers))
         {
             Debug.DrawRay(origin, direction * hit.distance, Color.green, 1.0f);
-            if (hit.collider.TryGetComponent<PackagePickup>(out var package))
+            if (hit.collider.TryGetComponent<T>(out var component))
             {
-                return package;
+                return component;
             }
         }
         else

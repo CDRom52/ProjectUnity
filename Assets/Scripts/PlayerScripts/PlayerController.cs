@@ -71,6 +71,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public bool isBoosting = false; //Si le joueur utilise le boost aérien
     public bool isCrashed = false;
     public bool askFly = false;
+    public bool isTalking = false;
 
     [Header("Attack")]
     public bool punchLeft = false;

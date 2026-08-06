@@ -14,15 +14,23 @@ public class DeliverySystemManager : MonoBehaviour
         
         public int targetCampsiteIndex;
 
+        [Header("NPC Configuration")]
+        public string npcName;
+        public Sprite npcPortrait;
+        [TextArea(3, 5)]
+        public string[] dialogueLines;
+
         [Header("Local Offsets")]
         public Vector3 packageOffset; 
         public Vector3 platformOffset;
+        public Vector3 npcOffset;
     }
 
     [Header("Prefabs")]
     public GameObject campsitePrefab;
     public GameObject platformPrefab;
     public GameObject packagePrefab;
+    public GameObject npcPrefab;
 
     [Header("Level Data Setup")]
     public List<CampsiteData> campsitesToSpawn = new List<CampsiteData>();
@@ -39,6 +47,7 @@ public class DeliverySystemManager : MonoBehaviour
     {
         CreateCampsitePlatform();
         CreatePackages();
+        CreateNPCs();
     }
 
     private void CreateCampsitePlatform()
@@ -82,6 +91,27 @@ public class DeliverySystemManager : MonoBehaviour
             if (packageObj.TryGetComponent<PackagePickup>(out PackagePickup packageScript))
             {
                 packageScript.SetupPackage(targetID, data.packageScale);
+            }
+        }
+    }
+
+    private void CreateNPCs()
+    {
+        if (npcPrefab == null) return;
+
+        for (int i = 0; i < campsitesToSpawn.Count; i++)
+        {
+            CampsiteData data = campsitesToSpawn[i];
+            GameObject parentCampsite = spawnedCampsites[i];
+
+            Vector3 npcWorldPos = data.position + data.npcOffset;
+            GameObject npcObj = Instantiate(npcPrefab, npcWorldPos, Quaternion.identity, parentCampsite.transform);
+
+            if (npcObj.TryGetComponent<NPCDialogue>(out NPCDialogue dialogueScript))
+            {
+                dialogueScript.npcName = data.npcName;
+                dialogueScript.npcPortrait = data.npcPortrait;
+                dialogueScript.lines = data.dialogueLines;
             }
         }
     }
