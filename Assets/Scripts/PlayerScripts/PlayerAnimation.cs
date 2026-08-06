@@ -81,7 +81,7 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
 
     void HandleIdleTimer()
     {
-        if (player.movementX == 0 && player.movementY == 0 && controller.isGrounded)
+        if (player.velocity.magnitude < 0.01f && controller.isGrounded)
         {
             idleTimer += Time.deltaTime;
 

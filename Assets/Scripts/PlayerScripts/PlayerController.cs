@@ -75,6 +75,11 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     [Header("Attack")]
     public bool punchLeft = false;
 
+    [Header("Slope Settings")]
+    public float maxSlopeAngle = 45f;
+    public float slideSpeed = 15f;
+    private Vector3 hitNormal;
+
 
     [Header("References")]
     public CharacterController controller; // Référence au CharacterController du joueur
@@ -128,7 +133,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
                 Jump();
             else
                 askFly = !askFly;
-                if (askFly && stats.canStart)
+                if (askFly && stats.canStart && !isCrashed)
                 {
                     StartFlying();
                     stats.BoostFlying();
@@ -277,6 +282,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
     void Crash()
     {
+        ApplySlopeSliding();
         if (!controller.isGrounded) //soit on est en air time
             velocity.y += gravity * Time.deltaTime;
         else if (velocity.y < 0) //soit on est au sol, ou on vient de toucher le sol
@@ -295,6 +301,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
     void Transition()
     {
+        ApplySlopeSliding();
         if (!controller.isGrounded) //soit on est en air time
             velocity.y += gravity * Time.deltaTime;
         else if (velocity.y < 0) //soit on est au sol, ou on vient de toucher le sol
@@ -305,6 +312,21 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             velocity.z = Mathf.Lerp(velocity.z, 0f, dynamicDecel * Time.deltaTime);
         }
         controller.Move(velocity * Time.deltaTime);
+    }
+
+    void ApplySlopeSliding()
+    {
+        float slopeAngle = Vector3.Angle(Vector3.up, hitNormal);
+
+        if (slopeAngle > maxSlopeAngle)
+        {
+            Vector3 slideDirection = hitNormal + Vector3.down;
+            
+            velocity.x += slideDirection.x * slideSpeed * Time.deltaTime;
+            velocity.z += slideDirection.z * slideSpeed * Time.deltaTime;
+            
+            velocity.y += gravity * Time.deltaTime;
+        }
     }
 
     void Update()
@@ -357,6 +379,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
         //Gravité
         ApplyGravity();
+        ApplySlopeSliding();
 
         //ACTIONS SANS STAMINA (mouvement au sol, saut, planer)
         if (controller.isGrounded) // soit on est au sol
@@ -379,6 +402,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {   
+        hitNormal = hit.normal;
         float speed = velocity.magnitude;
         float downwardOrientation = Vector3.Dot(velocity.normalized, Vector3.down);
         if (speed > groundHitSpeed && downwardOrientation < 1) //Si on va assez vite (pas pour un atterrisage normal) et que on ne va pas directement vers le bas
