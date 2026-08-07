@@ -173,6 +173,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
     void StartFlying()
     {
+        effects.StartBoost();
         Vector3 boostDirectionHorizontal;
         boostDirection = cameraTransform.forward.normalized;
         boostDirectionHorizontal = Vector3.Scale(boostDirection, new Vector3(1, 0, 1)).normalized;

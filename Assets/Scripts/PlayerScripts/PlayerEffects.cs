@@ -82,6 +82,6 @@ public class PlayerEffects : MonoBehaviour
 
     public void StartBoost()
     {
-        GameObject boostCloud = Instantiate(boostCloudPrefab, player.transform.position, player.transform.rotation);
+        GameObject boostCloud = Instantiate(boostCloudPrefab, player.transform.position + 10f * player.transform.forward, player.transform.rotation);
     }
 }

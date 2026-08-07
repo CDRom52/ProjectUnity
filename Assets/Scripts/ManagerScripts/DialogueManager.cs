@@ -69,7 +69,6 @@ public class DialogueManager : MonoBehaviour
         }
         else
         {
-            // Close dialogue panel
             dialoguePanel.SetActive(false);
         }
     }
