@@ -4,7 +4,6 @@ public class NPCDialogue : MonoBehaviour
 {
     [Header("NPC Profile")]
     public string npcName;
-    public Sprite npcPortrait;
 
     [Header("Dialogue Content")]
     [TextArea(3, 5)]
@@ -18,7 +17,7 @@ public class NPCDialogue : MonoBehaviour
 
         if (currentLineIndex < lines.Length)
         {
-            DialogueManager.Instance.ShowDialogue(npcName, npcPortrait, lines[currentLineIndex]);
+            DialogueManager.Instance.ShowDialogue(npcName, lines[currentLineIndex]);
             currentLineIndex++;
         }
         else

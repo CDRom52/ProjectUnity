@@ -95,8 +95,18 @@ public class PlayerInteraction : MonoBehaviour
         nearbyNPC = GetThingInFront<NPCDialogue>();
         if (nearbyNPC != null)
         {
-            nearbyNPC.Interact();
-            player.isTalking = true;
+            if (!player.isTalking)
+            {
+                player.isTalking = true;
+                nearbyNPC.Interact();
+            }
+            else
+            {
+                player.isTalking = false;
+                DialogueManager.Instance.SkipOrClose();
+            }
+
+            nearbyNPC = null;
             return true;
         }
         return false;

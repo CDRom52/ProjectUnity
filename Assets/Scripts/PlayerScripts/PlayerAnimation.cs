@@ -143,6 +143,7 @@ public class PlayerAnimation : MonoBehaviour //hérite de MonoBehaviour (classe 
                 Vector3 lastDir = player.lastVelocity.normalized;
                 Vector3 turnAxis = Vector3.Cross(lastDir, currentDir);
                 player.turnSpeed = turnAxis.y / Time.deltaTime;
+                player.pitchSpeed = turnAxis.x / Time.deltaTime;
                 targetRoll = -player.turnSpeed * player.flyRollAngle;
             }
         }

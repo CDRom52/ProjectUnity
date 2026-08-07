@@ -16,7 +16,6 @@ public class DeliverySystemManager : MonoBehaviour
 
         [Header("NPC Configuration")]
         public string npcName;
-        public Sprite npcPortrait;
         [TextArea(3, 5)]
         public string[] dialogueLines;
 
@@ -110,7 +109,6 @@ public class DeliverySystemManager : MonoBehaviour
             if (npcObj.TryGetComponent<NPCDialogue>(out NPCDialogue dialogueScript))
             {
                 dialogueScript.npcName = data.npcName;
-                dialogueScript.npcPortrait = data.npcPortrait;
                 dialogueScript.lines = data.dialogueLines;
             }
         }

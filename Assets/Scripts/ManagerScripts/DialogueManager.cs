@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class DialogueManager : MonoBehaviour
@@ -9,7 +8,6 @@ public class DialogueManager : MonoBehaviour
 
     [Header("UI References")]
     public GameObject dialoguePanel;
-    public Image portraitImage;
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI dialogueText;
 
@@ -29,12 +27,10 @@ public class DialogueManager : MonoBehaviour
             dialoguePanel.SetActive(false);
     }
 
-    public void ShowDialogue(string npcName, Sprite portrait, string text)
+    public void ShowDialogue(string npcName, string text)
     {
         dialoguePanel.SetActive(true);
         nameText.text = npcName;
-        portraitImage.sprite = portrait;
-        portraitImage.gameObject.SetActive(portrait != null);
 
         if (typingCoroutine != null)
         {

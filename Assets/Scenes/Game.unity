@@ -2052,7 +2052,6 @@ GameObject:
   - component: {fileID: 393620609}
   - component: {fileID: 393620611}
   - component: {fileID: 393620610}
-  - component: {fileID: 393620612}
   m_Layer: 5
   m_Name: DialoguePanel
   m_TagString: Untagged
@@ -2072,15 +2071,14 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1829438367}
   - {fileID: 1534784393}
   - {fileID: 1266794387}
   m_Father: {fileID: 491503588}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 800, y: 100}
+  m_AnchoredPosition: {x: 0, y: 30}
+  m_SizeDelta: {x: 600, y: 100}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &393620610
 MonoBehaviour:
@@ -2120,23 +2118,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 393620608}
   m_CullTransparentMesh: 1
---- !u!114 &393620612
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 393620608}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8784f67f9f9cb914f8f91f70965d3d12, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  dialoguePanel: {fileID: 393620608}
-  portraitImage: {fileID: 0}
-  nameText: {fileID: 0}
-  dialogueText: {fileID: 0}
-  typingSpeed: 0.03
 --- !u!1 &482176909
 GameObject:
   m_ObjectHideFlags: 0
@@ -4926,7 +4907,6 @@ MonoBehaviour:
     packageScale: {x: 1, y: 1, z: 1}
     targetCampsiteIndex: 1
     npcName: NPC 1
-    npcPortrait: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
     dialogueLines:
     - I'm a real talking live boy!
     packageOffset: {x: 2, y: 0, z: 2}
@@ -4936,8 +4916,8 @@ MonoBehaviour:
     packageScale: {x: 1, y: 1, z: 1}
     targetCampsiteIndex: 2
     npcName: NPC 2
-    npcPortrait: {fileID: 0}
-    dialogueLines: []
+    dialogueLines:
+    - I'm a real talking live boy!
     packageOffset: {x: 2, y: 0, z: 2}
     platformOffset: {x: -5, y: 0, z: -5}
     npcOffset: {x: 0, y: 0, z: 0}
@@ -4945,8 +4925,8 @@ MonoBehaviour:
     packageScale: {x: 1, y: 1, z: 1}
     targetCampsiteIndex: 3
     npcName: NPC 3
-    npcPortrait: {fileID: 0}
-    dialogueLines: []
+    dialogueLines:
+    - I'm a real talking live boy!
     packageOffset: {x: 2, y: 0, z: 2}
     platformOffset: {x: -5, y: 0, z: -5}
     npcOffset: {x: 0, y: 0, z: 0}
@@ -4954,8 +4934,8 @@ MonoBehaviour:
     packageScale: {x: 1, y: 1, z: 1}
     targetCampsiteIndex: 0
     npcName: NPC 4
-    npcPortrait: {fileID: 0}
-    dialogueLines: []
+    dialogueLines:
+    - I'm a real talking live boy!
     packageOffset: {x: 2, y: 0, z: 2}
     platformOffset: {x: -5, y: 0, z: -5}
     npcOffset: {x: 0, y: 0, z: 0}
@@ -5624,6 +5604,7 @@ Transform:
   - {fileID: 1929266017}
   - {fileID: 45958037}
   - {fileID: 2049622497}
+  - {fileID: 1392796302}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1266794386
@@ -5660,8 +5641,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 100, y: 20}
-  m_SizeDelta: {x: 600, y: 70}
+  m_AnchoredPosition: {x: 20, y: 5}
+  m_SizeDelta: {x: 500, y: 70}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1266794388
 MonoBehaviour:
@@ -6661,6 +6642,54 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1392796301
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1392796302}
+  - component: {fileID: 1392796303}
+  m_Layer: 0
+  m_Name: DialogueManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1392796302
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1392796301}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1161879043}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1392796303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1392796301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8784f67f9f9cb914f8f91f70965d3d12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueManager
+  dialoguePanel: {fileID: 393620608}
+  nameText: {fileID: 1534784394}
+  dialogueText: {fileID: 1266794388}
+  typingSpeed: 0.03
 --- !u!1 &1476357621
 GameObject:
   m_ObjectHideFlags: 0
@@ -6832,8 +6861,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 5, y: 65}
-  m_SizeDelta: {x: 60, y: 20}
+  m_AnchoredPosition: {x: 20, y: 75}
+  m_SizeDelta: {x: 70, y: 20}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1534784394
 MonoBehaviour:
@@ -6889,7 +6918,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 2
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -7859,81 +7888,6 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1828403317}
-  m_CullTransparentMesh: 1
---- !u!1 &1829438366
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1829438367}
-  - component: {fileID: 1829438369}
-  - component: {fileID: 1829438368}
-  m_Layer: 5
-  m_Name: PortraitImage
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1829438367
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1829438366}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 393620609}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 10, y: 10}
-  m_SizeDelta: {x: 50, y: 50}
-  m_Pivot: {x: 0, y: 0}
---- !u!114 &1829438368
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1829438366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &1829438369
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1829438366}
   m_CullTransparentMesh: 1
 --- !u!1 &1855406471
 GameObject:

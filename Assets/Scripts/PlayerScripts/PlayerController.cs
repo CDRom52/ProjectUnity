@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public float currentGlidePitch = 0f;
     public float glideTurnSpeed = 10f;
     public float turnSpeed;
+    public float pitchSpeed;
 
     [Header("Crashing")]
     public float crashPitchAngle = 40f;
@@ -128,13 +129,13 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
     void OnJump(InputValue value)
     {
-        if (value.isPressed)
+        if (value.isPressed && !isCrashed && !isTalking && !animationPause)
         {
             if (controller.isGrounded)
                 Jump();
             else
                 askFly = !askFly;
-                if (askFly && stats.canStart && !isCrashed)
+                if (askFly && stats.canStart)
                 {
                     StartFlying();
                     stats.BoostFlying();
@@ -351,7 +352,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             Crash();
             return;
         }
-        else if (animationPause)
+        else if (animationPause || isTalking)
         {
             Transition();
             return;

@@ -9,10 +9,13 @@ public class CameraController : MonoBehaviour
     [Header("Third person parameters")]
     public float distance = 5f;
     public float height = 2f;
+    public float normalHeight = 2f;
+    private float targetHeight = 2f;
+    public float maxHeight = 3f;
     public float sensitivity = 2f;
-    public float offset = 0.5f; // Négatif pour la gauche, positif pour la droite
-    public float normalOffset = 0.5f; // Négatif pour la gauche, positif pour la droite
-    private float targetOffset = 0.5f; // Négatif pour la gauche, positif pour la droite
+    public float offset = 0.5f;
+    public float normalOffset = 0.5f;
+    private float targetOffset = 0.5f;
     public float maxOffset = 1f;
     private float yaw = 0f; //Lacet : rotation autour de l'axe Y
     private float pitch = 20f; //Tangage : rotation autour de l'axe X
@@ -83,7 +86,7 @@ public class CameraController : MonoBehaviour
 
     void LateUpdate() //La caméra se déplace après que le joueur a bougé
     {
-        if (PauseController.isPaused) return;
+        if (PauseController.isPaused || playerScript.isTalking) return;
         
         Vector2 mouseDelta = Mouse.current.delta.ReadValue(); //déplacement de la souris par rapport à la dernière frame
 
@@ -169,6 +172,17 @@ public class CameraController : MonoBehaviour
         else
             targetOffset = normalOffset;
         offset = Mathf.Lerp(offset, targetOffset, playerScript.tiltSpeed*Time.deltaTime);
+    }
+
+    void HandleHeight()
+    {
+        if (playerScript.isGliding)
+            targetHeight = playerScript.pitchSpeed * maxOffset;
+        else if (playerScript.isBoosting)
+            targetHeight = 0f;
+        else
+            targetHeight = normalHeight;
+        height = Mathf.Lerp(height, targetHeight, playerScript.pitchSpeed*Time.deltaTime);
     }
 
     void HandleShake()
