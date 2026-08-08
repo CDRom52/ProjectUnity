@@ -256,7 +256,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
     void ApplyGravity()
     {
-        if (transform.position.y < 10f)
+        if (transform.position.y < 20f)
         {
             velocity.y -= gravity * Time.deltaTime;
             return;
