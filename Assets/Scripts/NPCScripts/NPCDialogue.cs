@@ -8,6 +8,7 @@ public class NPCDialogue : MonoBehaviour
     [Header("Dialogue Content")]
     [TextArea(3, 5)]
     public string[] lines;
+    public bool isTalking = false;
 
     private int currentLineIndex = 0;
 
@@ -17,13 +18,19 @@ public class NPCDialogue : MonoBehaviour
 
         if (currentLineIndex < lines.Length)
         {
+            isTalking = true;
             DialogueManager.Instance.ShowDialogue(npcName, lines[currentLineIndex]);
             currentLineIndex++;
         }
         else
         {
+            isTalking = false;
             currentLineIndex = 0;
-            DialogueManager.Instance.SkipOrClose();
+        }
+
+        if (currentLineIndex == lines.Length - 1)
+        {
+            DialogueManager.Instance.LastLine();
         }
     }
 }

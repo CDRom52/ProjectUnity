@@ -256,6 +256,12 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
     void ApplyGravity()
     {
+        if (transform.position.y < 10f)
+        {
+            velocity.y -= gravity * Time.deltaTime;
+            return;
+        }
+
         if (controller.isGrounded && velocity.y < 0f)
         {
             velocity.y = groundGravity; // Pour rester collé au sol
@@ -263,6 +269,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             isBoosting = false;
             isBraking = false;
         }
+        
         else
             velocity.y += gravity * Time.deltaTime;
     }

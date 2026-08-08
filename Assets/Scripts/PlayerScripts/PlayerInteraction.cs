@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Linq;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -68,6 +69,18 @@ public class PlayerInteraction : MonoBehaviour
 
     public void Interacted()
     {
+        if (!player.isCrashed)
+        {
+            if (TryDialogue())
+                return;
+            else if (currentCarriedPackage == null)
+            {
+                if (TryPickUp())
+                    return;
+            }
+            else if (DropPackage())
+                return;
+        }
         if (camp!=null && player.controller.isGrounded && !player.isCrashed)
         {
             float distanceToCamp = Vector3.Distance(transform.position, camp.transform.position);
@@ -76,17 +89,6 @@ public class PlayerInteraction : MonoBehaviour
                 Sleep();
                 return;
             }
-        }
-        if (!player.isCrashed)
-        {
-            if (TryDialogue())
-                return;
-            else if (currentCarriedPackage == null)
-            {
-                TryPickUp();
-            }
-            else
-                DropPackage();
         }
     }
 
@@ -100,19 +102,28 @@ public class PlayerInteraction : MonoBehaviour
                 player.isTalking = true;
                 nearbyNPC.Interact();
             }
+            else if (DialogueManager.Instance.isTyping)
+            {
+                DialogueManager.Instance.Skip();
+            }
             else
             {
-                player.isTalking = false;
-                DialogueManager.Instance.SkipOrClose();
+                nearbyNPC.Interact();
             }
 
-            nearbyNPC = null;
+            if (!nearbyNPC.isTalking)
+            {
+                player.isTalking = false;
+                DialogueManager.Instance.Close();
+                nearbyNPC = null;
+            }
+            
             return true;
         }
         return false;
     }
 
-    void TryPickUp()
+    private bool TryPickUp()
     {
         nearbyPackage = GetThingInFront<PackagePickup>();
         if (nearbyPackage != null)
@@ -123,17 +134,21 @@ public class PlayerInteraction : MonoBehaviour
             
             NotificationManager.Instance.ShowNotification($"Package picked up.");
             nearbyPackage = null;
+            return true;
         }
+        return false;
     }
 
-    public void DropPackage()
+    public bool DropPackage()
     {
-        if (currentCarriedPackage == null) return;
+        if (currentCarriedPackage == null)
+            return false;
         currentCarriedPackage.Detach(player);
         player.speedMultiplier = 1f;
 
         NotificationManager.Instance.ShowNotification($"Package dropped.");
         currentCarriedPackage = null;
+        return true;
     }
 
 

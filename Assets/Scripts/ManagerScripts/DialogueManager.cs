@@ -1,36 +1,43 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class DialogueManager : MonoBehaviour
 {
-    public static DialogueManager Instance { get; private set; }
+    public static DialogueManager Instance;
 
-    [Header("UI References")]
+    [Header("References")]
     public GameObject dialoguePanel;
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI dialogueText;
+    public Image nextImage;
+    public Sprite nextSprite;
+    public Sprite endSprite;
+    private Sprite currentSprite;
 
     [Header("Settings")]
     public float typingSpeed = 0.03f;
 
     private Coroutine typingCoroutine;
-    private bool isTyping = false;
+    public bool isTyping = false;
     private string currentFullText = "";
 
     void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        Instance = this;
 
-        if (dialoguePanel != null)
-            dialoguePanel.SetActive(false);
+        dialoguePanel.SetActive(false);
+
+        currentSprite = nextSprite;
     }
 
     public void ShowDialogue(string npcName, string text)
     {
+        nextImage.sprite = currentSprite;
         dialoguePanel.SetActive(true);
         nameText.text = npcName;
+        
 
         if (typingCoroutine != null)
         {
@@ -42,6 +49,7 @@ public class DialogueManager : MonoBehaviour
 
     private IEnumerator TypeSentence(string sentence)
     {
+        
         isTyping = true;
         currentFullText = sentence;
         dialogueText.text = "";
@@ -55,17 +63,21 @@ public class DialogueManager : MonoBehaviour
         isTyping = false;
     }
 
-    public void SkipOrClose()
+    public void Skip()
     {
-        if (isTyping)
-        {
-            StopCoroutine(typingCoroutine);
-            dialogueText.text = currentFullText;
-            isTyping = false;
-        }
-        else
-        {
-            dialoguePanel.SetActive(false);
-        }
+        StopCoroutine(typingCoroutine);
+        dialogueText.text = currentFullText;
+        isTyping = false;
+    }
+
+    public void Close()
+    {
+        dialoguePanel.SetActive(false);
+        currentSprite = nextSprite;
+    }
+
+    public void LastLine()
+    {
+        currentSprite = endSprite;
     }
 }
