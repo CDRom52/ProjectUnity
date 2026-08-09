@@ -144,14 +144,6 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         }
     }
 
-    void OnCamp(InputValue value)
-    {
-        if (value.isPressed)
-        {
-            interaction.OnCamp();
-        }
-    }
-
     void OnInteract(InputValue value)
     {
         if (value.isPressed)

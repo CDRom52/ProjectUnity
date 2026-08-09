@@ -11,6 +11,9 @@ public class PlayerInteraction : MonoBehaviour
     public PackagePickup nearbyPackage;
     private PackagePickup currentCarriedPackage;
 
+    [Header("Sleep")]
+    private SleepingBag nearbyBed;
+
     [Header("Interaction Settings")]
     public float headHeight = 0.5f;
     public float reachDistance = 3.0f;
@@ -19,11 +22,6 @@ public class PlayerInteraction : MonoBehaviour
 
     [Header("Dialogue")]
     public NPCDialogue nearbyNPC;
-
-    [Header("Camp")]
-    private GameObject camp;
-    public GameObject campPrefab;
-    public float maxDistanceToCamp = 3f;
 
     [Header("Fade to black")]
     public CanvasGroup fadeGroup;
@@ -42,51 +40,27 @@ public class PlayerInteraction : MonoBehaviour
         
     }
 
-    public void OnCamp()
-    {
-        if (player.controller.isGrounded && !player.isCrashed)
-        {
-            if (camp != null)
-            {
-                float distanceToCamp = Vector3.Distance(transform.position, camp.transform.position);
-                if (distanceToCamp > maxDistanceToCamp) 
-                {
-                    Debug.Log("Too far from camp to put away!");
-                }
-                else if (!isFading)
-                {
-                    StartCoroutine(CampRoutine());
-                    NotificationManager.Instance.ShowNotification($"Putting away camp.");
-                }
-            }
-            else if (!isFading)
-            {
-                StartCoroutine(CampRoutine());
-                NotificationManager.Instance.ShowNotification($"Setting camp.");
-            }
-        }
-    }
-
     public void Interacted()
     {
         if (!player.isCrashed)
         {
             if (TryDialogue())
+            {
                 return;
+            }
             else if (currentCarriedPackage == null)
             {
                 if (TryPickUp())
+                {
                     return;
+                }
             }
             else if (DropPackage())
-                return;
-        }
-        if (camp!=null && player.controller.isGrounded && !player.isCrashed)
-        {
-            float distanceToCamp = Vector3.Distance(transform.position, camp.transform.position);
-            if (distanceToCamp < maxDistanceToCamp && !isFading && player.controller.isGrounded)
             {
-                Sleep();
+                return;
+            }
+            if (TrySleep())
+            {
                 return;
             }
         }
@@ -153,45 +127,18 @@ public class PlayerInteraction : MonoBehaviour
     }
 
 
-    void Sleep()
+    private bool TrySleep()
     {
-        StartCoroutine(SleepRoutine());
-        NotificationManager.Instance.ShowNotification($"Sleeping...");
-    }
-
-    void SetCamp()
-    {
-        if (camp != null)
+        nearbyBed = GetThingInFront<SleepingBag>();
+        if (nearbyBed != null)
         {
-            Destroy(camp);
+            Debug.Log("That's happenign");
+            StartCoroutine(SleepRoutine());
+            NotificationManager.Instance.ShowNotification($"Sleeping...");
+            return true;
         }
-        else
-        {
-            Vector3 spawnPosition = transform.position + (transform.forward * 2.0f);
-            if (Physics.Raycast(spawnPosition + Vector3.up, Vector3.down, out RaycastHit hit, 5f))
-            {
-                spawnPosition.y = hit.point.y;
-                camp = Instantiate(campPrefab, spawnPosition, transform.rotation);
-            }
-        }
-    }
-
-    IEnumerator CampRoutine()
-    {
-        Debug.Log("Camp");
-        player.isBusy = true;
-        isFading = true;
-
-        yield return StartCoroutine(Fade(1));
-
-        SetCamp();
-
-        yield return new WaitForSeconds(0.5f);
-
-        yield return StartCoroutine(Fade(0));
-
-        isFading = false;
-        player.isBusy = false;
+        return false;
+        
     }
 
     IEnumerator SleepRoutine()

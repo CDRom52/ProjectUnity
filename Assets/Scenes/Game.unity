@@ -9824,7 +9824,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3379000406202037508, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
       propertyPath: interactableLayers.m_Bits
-      value: 2304
+      value: 6400
       objectReference: {fileID: 0}
     - target: {fileID: 4352403520438712747, guid: d561a358220328c4596d8f7e41f870e9, type: 3}
       propertyPath: m_ConnectedBody
