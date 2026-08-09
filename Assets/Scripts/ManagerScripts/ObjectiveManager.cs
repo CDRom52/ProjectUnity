@@ -4,7 +4,7 @@ using TMPro;
 
 public class ObjectiveManager : MonoBehaviour
 {
-    public static ObjectiveManager Instance;
+    public static ObjectiveManager Instance { get; private set; }
 
     [Header("UI References")]
     public GameObject objectivePanel;
@@ -16,48 +16,79 @@ public class ObjectiveManager : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
 
-        objectivePanel.SetActive(false);
+        if (objectivePanel != null) objectivePanel.SetActive(false);
     }
 
-    public void AddObjective(string description, Object target, string subjectKey)
+    public void AddDeliveryObjective(string description, int packageID)
     {
-        Objective newObj = new Objective(description, target, subjectKey);
-        activeObjectives.Add(newObj);
+        Objective obj = new Objective(description, packageID);
+        RegisterObjective(obj);
+    }
+
+    public void AddDialogueObjective(string description, NPCDialogue npc, int lineIndex)
+    {
+        Objective obj = new Objective(description, npc, lineIndex);
+        RegisterObjective(obj);
+    }
+
+    private void RegisterObjective(Objective obj)
+    {
+        activeObjectives.Add(obj);
 
         GameObject textObj = Instantiate(objectiveTextPrefab, listContentContainer);
         TextMeshProUGUI tmpText = textObj.GetComponent<TextMeshProUGUI>();
-        tmpText.text = description;
+        tmpText.text = obj.description;
 
-        uiMap.Add(newObj, tmpText);
+        uiMap.Add(obj, tmpText);
     }
 
-    public bool TryCompleteObjective(Object target, string subjectKey)
+    public void CheckPackageDelivery(PlatformManager platform, int packageID)
     {
         foreach (Objective obj in activeObjectives)
         {
-            if (obj.isCompleted) continue;
+            if (obj.isCompleted || obj.type != ObjectiveType.DeliverPackage) continue;
 
-            if (obj.targetObject == target && obj.subjectKey == subjectKey)
+            if (obj.packageID == packageID)
             {
-                obj.isCompleted = true;
-
-                if (uiMap.TryGetValue(obj, out TextMeshProUGUI tmpText))
-                {
-                    tmpText.text = $"<s>{obj.description}</s>";
-                    tmpText.color = Color.gray;
-                }
-
-                Debug.Log($"[Objective System] Completed: {obj.description}");
-                return true;
+                CompleteObjective(obj);
+                break;
             }
         }
-        return false;
+    }
+
+    public void CheckNPCDialogue(NPCDialogue npc, int lineIndex)
+    {
+        foreach (Objective obj in activeObjectives)
+        {
+            if (obj.isCompleted || obj.type != ObjectiveType.TriggerNPCDialogue) continue;
+
+            if (obj.targetNPC == npc && obj.dialogueLineIndex == lineIndex)
+            {
+                CompleteObjective(obj);
+                break;
+            }
+        }
+    }
+
+    private void CompleteObjective(Objective obj)
+    {
+        obj.isCompleted = true;
+
+        if (uiMap.TryGetValue(obj, out TextMeshProUGUI tmpText))
+        {
+            tmpText.text = $"<s>{obj.description}</s>";
+            tmpText.color = Color.gray;
+        }
+
+        Debug.Log($"Objective Completed: {obj.description}");
     }
 
     public void ToggleUI()
     {
-        objectivePanel.SetActive(!objectivePanel.activeSelf);
+        if (objectivePanel != null)
+            objectivePanel.SetActive(!objectivePanel.activeSelf);
     }
 }

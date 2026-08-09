@@ -32,5 +32,14 @@ public class NPCDialogue : MonoBehaviour
         {
             DialogueManager.Instance.LastLine();
         }
+
+        if (currentLineIndex == 0)
+        {
+            ObjectiveManager.Instance.AddDeliveryObjective(
+                "- Deliver NPC 1's package to its destination.",
+                0
+            );
+        }
+
     }
 }

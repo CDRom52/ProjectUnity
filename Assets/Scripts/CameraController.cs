@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -8,6 +9,10 @@ public class CameraController : MonoBehaviour
 {
     [Header("Third person parameters")]
     public float distance = 5f;
+    public float aimDistance = 1f;
+    public float normalDistance = 5f;
+    public float aimSpeed = 1f;
+    private float targetDistance;
     public float height = 2f;
     public float normalHeight = 2f;
     private float targetHeight = 2f;
@@ -121,6 +126,8 @@ public class CameraController : MonoBehaviour
 
         Quaternion rotation = Quaternion.Euler(pitch, yaw, 0f);
 
+        Aim();
+
         HandleFOV();
 
         HandleOffset();
@@ -146,6 +153,19 @@ public class CameraController : MonoBehaviour
 
         Vector3 lookAtTarget = headPosition + rotation * Vector3.right * offset;
         transform.LookAt(lookAtTarget);
+    }
+
+    void Aim()
+    {
+        if (playerScript.isAiming)
+        {
+            targetDistance = aimDistance;
+        }
+        else
+        {
+            targetDistance = normalDistance;
+        }
+        distance = Mathf.Lerp(distance, targetDistance, aimSpeed * Time.deltaTime);
     }
 
     void HandleFOV()

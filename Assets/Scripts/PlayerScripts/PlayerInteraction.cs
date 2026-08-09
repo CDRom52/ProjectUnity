@@ -26,7 +26,6 @@ public class PlayerInteraction : MonoBehaviour
     [Header("Fade to black")]
     public CanvasGroup fadeGroup;
     public float fadeDuration = 1.0f;
-    private bool isFading = false;
 
 
     void Start()
@@ -132,7 +131,6 @@ public class PlayerInteraction : MonoBehaviour
         nearbyBed = GetThingInFront<SleepingBag>();
         if (nearbyBed != null)
         {
-            Debug.Log("That's happenign");
             StartCoroutine(SleepRoutine());
             NotificationManager.Instance.ShowNotification($"Sleeping...");
             return true;
@@ -144,7 +142,6 @@ public class PlayerInteraction : MonoBehaviour
     IEnumerator SleepRoutine()
     {
         player.isBusy = true;
-        isFading = true;
 
         yield return StartCoroutine(Fade(1));
 
@@ -154,7 +151,6 @@ public class PlayerInteraction : MonoBehaviour
 
         yield return StartCoroutine(Fade(0));
 
-        isFading = false;
         player.isBusy = false;
     }
 

@@ -1,3 +1,4 @@
+using System.Data.Common;
 using UnityEngine;
 
 public class PackagePickup : MonoBehaviour
@@ -9,9 +10,11 @@ public class PackagePickup : MonoBehaviour
     public int destinationPlatformID;
     public bool isDelivered = false;
     public bool isCarried = false;
+    public int id;
 
-    public void SetupPackage(int targetID, Vector3 targetScale)
+    public void SetupPackage(int packageID, int targetID, Vector3 targetScale)
     {
+        id = packageID;
         destinationPlatformID = targetID;
         transform.localScale = targetScale;
     }
@@ -30,7 +33,7 @@ public class PackagePickup : MonoBehaviour
 
         transform.SetParent(player.chestBone);
         
-        transform.localPosition = -Vector3.forward * 0.7f * transform.localScale.x;
+        transform.localPosition = -0.7f * transform.localScale.x * Vector3.forward;
         transform.localRotation = Quaternion.identity;
     }
 

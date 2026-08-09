@@ -73,6 +73,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public bool isCrashed = false;
     public bool askFly = false;
     public bool isTalking = false;
+    public bool isAiming = false;
 
     [Header("Attack")]
     public bool punchLeft = false;
@@ -158,6 +159,11 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         {
             attack.Attack();
         }
+    }
+
+    void OnAim(InputValue value)
+    {
+        isAiming = !isAiming;
     }
 
     void OnObjectiveList(InputValue value)

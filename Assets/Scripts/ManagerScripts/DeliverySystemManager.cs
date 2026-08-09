@@ -77,6 +77,7 @@ public class DeliverySystemManager : MonoBehaviour
         {
             CampsiteData data = campsitesToSpawn[i];
             GameObject parentCampsite = spawnedCampsites[i];
+            int packageID = i;
 
             int targetID = 1;
             if (data.targetCampsiteIndex >= 0 && data.targetCampsiteIndex < campsitesToSpawn.Count)
@@ -89,7 +90,7 @@ public class DeliverySystemManager : MonoBehaviour
 
             if (packageObj.TryGetComponent<PackagePickup>(out PackagePickup packageScript))
             {
-                packageScript.SetupPackage(targetID, data.packageScale);
+                packageScript.SetupPackage(packageID, targetID, data.packageScale);
             }
         }
     }
