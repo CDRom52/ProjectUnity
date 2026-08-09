@@ -21,4 +21,9 @@ public class HUDManager : MonoBehaviour
         healthSlider.value = stats.currentHealth;
         energySlider.value = stats.currentEnergy;
     }
+
+    public void ObjectiveList()
+    {
+        ObjectiveManager.Instance.ToggleUI();
+    }
 }

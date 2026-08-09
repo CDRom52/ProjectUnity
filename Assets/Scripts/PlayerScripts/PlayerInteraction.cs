@@ -94,7 +94,8 @@ public class PlayerInteraction : MonoBehaviour
 
     private bool TryDialogue()
     {
-        nearbyNPC = GetThingInFront<NPCDialogue>();
+        if (nearbyNPC == null)
+            nearbyNPC = GetThingInFront<NPCDialogue>();
         if (nearbyNPC != null)
         {
             if (!player.isTalking)

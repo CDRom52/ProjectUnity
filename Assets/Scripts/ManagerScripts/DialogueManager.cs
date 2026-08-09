@@ -49,7 +49,6 @@ public class DialogueManager : MonoBehaviour
 
     private IEnumerator TypeSentence(string sentence)
     {
-        
         isTyping = true;
         currentFullText = sentence;
         dialogueText.text = "";

@@ -94,6 +94,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     public LayerMask groundLayer;
     public Transform chestBone;
     private PlayerAttack attack;
+    public HUDManager hud;
 
     [Header("Animation Settings")]
     public bool animationPause = false;
@@ -166,6 +167,14 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             attack.Attack();
         }
     }
+
+    void OnObjectiveList(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            hud.ObjectiveList();
+        }
+    } 
 
     void Jump()
     {
@@ -259,6 +268,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         if (transform.position.y < 20f)
         {
             velocity.y -= gravity * Time.deltaTime;
+            isCrashed = false;
             return;
         }
 
@@ -292,10 +302,9 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
     void Crash()
     {
+        ApplyGravity();
         ApplySlopeSliding();
-        if (!controller.isGrounded) //soit on est en air time
-            velocity.y += gravity * Time.deltaTime;
-        else if (velocity.y < 0) //soit on est au sol, ou on vient de toucher le sol
+        if (controller.isGrounded && velocity.y < 0) //soit on est au sol, ou on vient de toucher le sol
         {
             float horizontalSpeed = new Vector3(velocity.x, 0f, velocity.z).magnitude;
             if (horizontalSpeed < 5f)
@@ -312,9 +321,8 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
     void Transition()
     {
         ApplySlopeSliding();
-        if (!controller.isGrounded) //soit on est en air time
-            velocity.y += gravity * Time.deltaTime;
-        else if (velocity.y < 0) //soit on est au sol, ou on vient de toucher le sol
+        ApplyGravity();
+        if (controller.isGrounded && velocity.y < 0) //soit on est au sol, ou on vient de toucher le sol
         {
             float horizontalSpeed = new Vector3(velocity.x, 0f, velocity.z).magnitude;
             float dynamicDecel = deceleration / (1f + horizontalSpeed / maxSpeed);
