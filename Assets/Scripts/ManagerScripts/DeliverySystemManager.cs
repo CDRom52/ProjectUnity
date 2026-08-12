@@ -16,8 +16,7 @@ public class DeliverySystemManager : MonoBehaviour
 
         [Header("NPC Configuration")]
         public string npcName;
-        [TextArea(3, 5)]
-        public string[] dialogueLines;
+        public DialogueNode[] dialogueNodes;
 
         [Header("Local Offsets")]
         public Vector3 packageOffset; 
@@ -110,7 +109,7 @@ public class DeliverySystemManager : MonoBehaviour
             if (npcObj.TryGetComponent<NPCDialogue>(out NPCDialogue dialogueScript))
             {
                 dialogueScript.npcName = data.npcName;
-                dialogueScript.lines = data.dialogueLines;
+                dialogueScript.nodes = data.dialogueNodes;
             }
         }
     }
