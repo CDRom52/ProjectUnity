@@ -2118,6 +2118,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 367101868}
   m_CullTransparentMesh: 1
+--- !u!1 &370135178
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 370135179}
+  m_Layer: 0
+  m_Name: Campsites
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &370135179
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 370135178}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 513089921}
+  m_Father: {fileID: 482176910}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &393620608
 GameObject:
   m_ObjectHideFlags: 0
@@ -2280,6 +2312,8 @@ Transform:
   - {fileID: 1549757072}
   - {fileID: 606947767}
   - {fileID: 1596648581}
+  - {fileID: 370135179}
+  - {fileID: 627968770}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &491503583
@@ -2411,6 +2445,68 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1001 &513089920
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 370135179}
+    m_Modifications:
+    - target: {fileID: 492845702177472659, guid: 1ee9949bf3d3c744fbe83e683426b0a0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 410
+      objectReference: {fileID: 0}
+    - target: {fileID: 492845702177472659, guid: 1ee9949bf3d3c744fbe83e683426b0a0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 492845702177472659, guid: 1ee9949bf3d3c744fbe83e683426b0a0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 282
+      objectReference: {fileID: 0}
+    - target: {fileID: 492845702177472659, guid: 1ee9949bf3d3c744fbe83e683426b0a0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 492845702177472659, guid: 1ee9949bf3d3c744fbe83e683426b0a0, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 492845702177472659, guid: 1ee9949bf3d3c744fbe83e683426b0a0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 492845702177472659, guid: 1ee9949bf3d3c744fbe83e683426b0a0, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 492845702177472659, guid: 1ee9949bf3d3c744fbe83e683426b0a0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 492845702177472659, guid: 1ee9949bf3d3c744fbe83e683426b0a0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 492845702177472659, guid: 1ee9949bf3d3c744fbe83e683426b0a0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5054369217305642721, guid: 1ee9949bf3d3c744fbe83e683426b0a0, type: 3}
+      propertyPath: m_Name
+      value: CampsitePrefab
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1ee9949bf3d3c744fbe83e683426b0a0, type: 3}
+--- !u!4 &513089921 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 492845702177472659, guid: 1ee9949bf3d3c744fbe83e683426b0a0, type: 3}
+  m_PrefabInstance: {fileID: 513089920}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &519366429
 GameObject:
   m_ObjectHideFlags: 0
@@ -3447,6 +3543,38 @@ ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 1782338148710965188, guid: baf77c60a75c172489bc41013d3f7baa, type: 3}
   m_PrefabInstance: {fileID: 6399331236970313088}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &627968769
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 627968770}
+  m_Layer: 0
+  m_Name: NPCs
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &627968770
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 627968769}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 840740273}
+  m_Father: {fileID: 482176910}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &637016258
 GameObject:
   m_ObjectHideFlags: 0
@@ -4357,6 +4485,30 @@ Terrain:
   m_EnableHeightmapRayTracing: 1
   m_EnableTreesAndDetailsRayTracing: 0
   m_TreeMotionVectorModeOverride: 3
+--- !u!1 &840740272 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4693952103485839359, guid: 2bd6cd170037e744a8049f5fad700c5a, type: 3}
+  m_PrefabInstance: {fileID: 1087565680}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &840740273 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7546166456918287228, guid: 2bd6cd170037e744a8049f5fad700c5a, type: 3}
+  m_PrefabInstance: {fileID: 1087565680}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &840740278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 840740272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab3dc643294f2e44489188f936ad4cf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCDialogue
+  npcDialogueJson: {fileID: 4900000, guid: 79b416f7ef64c9a44983b00e1b6af6e8, type: 3}
+  dialogueManager: {fileID: 1392796303}
 --- !u!1 &855437612
 GameObject:
   m_ObjectHideFlags: 0
@@ -5133,7 +5285,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1074742652
 Transform:
   m_ObjectHideFlags: 0
@@ -5170,10 +5322,29 @@ MonoBehaviour:
     packageScale: {x: 1, y: 1, z: 1}
     targetCampsiteIndex: 1
     npcName: NPC 1
-    dialogueLines:
-    - I'm a real talking live boy!
-    - No, I'm serious!
-    - I promise, I'm a MAAAAAAAAAN!!!!
+    dialogueNodes:
+    - id: 
+      speaker: 
+      npcText: Hi! I'm NPC1. Who are you?
+      choices:
+      - text: 
+        nextNodeId: 
+      - text: 
+        nextNodeId: 
+      - text: 
+        nextNodeId: 
+    - id: 
+      speaker: 
+      npcText: You fucking idiot, I need your name!
+      choices: []
+    - id: 
+      speaker: 
+      npcText: No you aren't you fuck.
+      choices: []
+    - id: 
+      speaker: 
+      npcText: Jesus Christ...
+      choices: []
     packageOffset: {x: 2, y: 0, z: 2}
     platformOffset: {x: -5, y: 0, z: -5}
     npcOffset: {x: 5, y: 0, z: 0}
@@ -5181,8 +5352,7 @@ MonoBehaviour:
     packageScale: {x: 1, y: 1, z: 1}
     targetCampsiteIndex: 2
     npcName: NPC 2
-    dialogueLines:
-    - I'm a real talking live boy!
+    dialogueNodes: []
     packageOffset: {x: 2, y: 0, z: 2}
     platformOffset: {x: -5, y: 0, z: -5}
     npcOffset: {x: 0, y: 0, z: 0}
@@ -5190,8 +5360,7 @@ MonoBehaviour:
     packageScale: {x: 1, y: 1, z: 1}
     targetCampsiteIndex: 3
     npcName: NPC 3
-    dialogueLines:
-    - I'm a real talking live boy!
+    dialogueNodes: []
     packageOffset: {x: 2, y: 0, z: 2}
     platformOffset: {x: -5, y: 0, z: -5}
     npcOffset: {x: 0, y: 0, z: 0}
@@ -5199,8 +5368,7 @@ MonoBehaviour:
     packageScale: {x: 1, y: 1, z: 1}
     targetCampsiteIndex: 0
     npcName: NPC 4
-    dialogueLines:
-    - I'm a real talking live boy!
+    dialogueNodes: []
     packageOffset: {x: 2, y: 0, z: 2}
     platformOffset: {x: -5, y: 0, z: -5}
     npcOffset: {x: 0, y: 0, z: 0}
@@ -5390,6 +5558,70 @@ Terrain:
   m_EnableHeightmapRayTracing: 1
   m_EnableTreesAndDetailsRayTracing: 0
   m_TreeMotionVectorModeOverride: 3
+--- !u!1001 &1087565680
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 627968770}
+    m_Modifications:
+    - target: {fileID: 3704029924904833312, guid: 2bd6cd170037e744a8049f5fad700c5a, type: 3}
+      propertyPath: isTalking
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4693952103485839359, guid: 2bd6cd170037e744a8049f5fad700c5a, type: 3}
+      propertyPath: m_Name
+      value: NPCPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 7546166456918287228, guid: 2bd6cd170037e744a8049f5fad700c5a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 410
+      objectReference: {fileID: 0}
+    - target: {fileID: 7546166456918287228, guid: 2bd6cd170037e744a8049f5fad700c5a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 501
+      objectReference: {fileID: 0}
+    - target: {fileID: 7546166456918287228, guid: 2bd6cd170037e744a8049f5fad700c5a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 282
+      objectReference: {fileID: 0}
+    - target: {fileID: 7546166456918287228, guid: 2bd6cd170037e744a8049f5fad700c5a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.92387956
+      objectReference: {fileID: 0}
+    - target: {fileID: 7546166456918287228, guid: 2bd6cd170037e744a8049f5fad700c5a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7546166456918287228, guid: 2bd6cd170037e744a8049f5fad700c5a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.38268343
+      objectReference: {fileID: 0}
+    - target: {fileID: 7546166456918287228, guid: 2bd6cd170037e744a8049f5fad700c5a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7546166456918287228, guid: 2bd6cd170037e744a8049f5fad700c5a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7546166456918287228, guid: 2bd6cd170037e744a8049f5fad700c5a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -45
+      objectReference: {fileID: 0}
+    - target: {fileID: 7546166456918287228, guid: 2bd6cd170037e744a8049f5fad700c5a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4693952103485839359, guid: 2bd6cd170037e744a8049f5fad700c5a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 840740278}
+  m_SourcePrefab: {fileID: 100100000, guid: 2bd6cd170037e744a8049f5fad700c5a, type: 3}
 --- !u!1 &1104199520
 GameObject:
   m_ObjectHideFlags: 0
@@ -7007,6 +7239,8 @@ MonoBehaviour:
   nextImage: {fileID: 548077134}
   nextSprite: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
   endSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  choiceButtonContainer: {fileID: 158698662}
+  choiceButtonPrefab: {fileID: 2278114797848482644, guid: a68830d6f746c044997c9f95ec0d8d22, type: 3}
   typingSpeed: 0.03
   isTyping: 0
 --- !u!1 &1418998110

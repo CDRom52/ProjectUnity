@@ -108,8 +108,6 @@ public class DeliverySystemManager : MonoBehaviour
 
             if (npcObj.TryGetComponent<NPCDialogue>(out NPCDialogue dialogueScript))
             {
-                dialogueScript.npcName = data.npcName;
-                dialogueScript.nodes = data.dialogueNodes;
             }
         }
     }

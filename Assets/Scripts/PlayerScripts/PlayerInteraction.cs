@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using System.Linq;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -76,21 +75,21 @@ public class PlayerInteraction : MonoBehaviour
                 player.isTalking = true;
                 nearbyNPC.Interact();
             }
-            else if (DialogueManager.Instance.isTyping)
-            {
-                DialogueManager.Instance.Skip();
-            }
-            else
-            {
-                nearbyNPC.Interact();
-            }
+            // else if (DialogueManager.Instance.isTyping)
+            // {
+            //     // DialogueManager.Instance.Skip();
+            // }
+            // else
+            // {
+            //     // nearbyNPC.Interact();
+            // }
 
-            if (!nearbyNPC.isTalking)
-            {
-                player.isTalking = false;
-                DialogueManager.Instance.Close();
-                nearbyNPC = null;
-            }
+            // if (!nearbyNPC.isTalking)
+            // {
+            //     player.isTalking = false;
+            //     // DialogueManager.Instance.Close();
+            //     nearbyNPC = null;
+            // }
             
             return true;
         }

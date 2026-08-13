@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: -5382476752998113447}
   - component: {fileID: 6292726853010002406}
   - component: {fileID: 3725501657658140341}
-  - component: {fileID: 3704029924904833312}
   m_Layer: 8
   m_Name: NPCPrefab
   m_TagString: Untagged
@@ -92,21 +91,6 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3704029924904833312
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4693952103485839359}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab3dc643294f2e44489188f936ad4cf7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  npcName: 
-  npcPortrait: {fileID: 0}
-  lines: []
 --- !u!1001 &812807441410764430
 PrefabInstance:
   m_ObjectHideFlags: 0

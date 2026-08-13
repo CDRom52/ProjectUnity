@@ -1,0 +1,45 @@
+{
+  "nodes": [
+    {
+      "id": "start",
+      "speaker": "Elder Willow",
+      "npcText": "Greetings, traveler. Dark times have fallen on our village.",
+      "choices": [
+        {
+          "text": "What happened here?",
+          "nextNodeId": "explain_threat"
+        },
+        {
+          "text": "I'm just passing through. Goodbye.",
+          "nextNodeId": "exit"
+        }
+      ]
+    },
+    {
+      "id": "explain_threat",
+      "speaker": "Elder Willow",
+      "npcText": "Goblins stole the Sun Crystal from the shrine last night!",
+      "choices": [
+        {
+          "text": "I'll help you get it back.",
+          "nextNodeId": "accept_quest"
+        },
+        {
+          "text": "Sounds like a personal problem.",
+          "nextNodeId": "exit"
+        }
+      ]
+    },
+    {
+      "id": "accept_quest",
+      "speaker": "Elder Willow",
+      "npcText": "Bless you! Head north toward the mountains.",
+      "choices": [
+        {
+          "text": "[End Dialogue]",
+          "nextNodeId": "exit"
+        }
+      ]
+    }
+  ]
+}
