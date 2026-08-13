@@ -21,8 +21,13 @@
       "npcText": "Goblins stole the Sun Crystal from the shrine last night!",
       "choices": [
         {
-          "text": "I'll help you get it back.",
-          "nextNodeId": "accept_quest"
+          "text": "I'll help you get the crystal back.",
+          "nextNodeId": "accept_quest",
+          "addObjective": {
+            "type": "DeliverPackage",
+            "description": "Deliver the medical package to the Guard.",
+            "packageID": 0
+          }
         },
         {
           "text": "Sounds like a personal problem.",

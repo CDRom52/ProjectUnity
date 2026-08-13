@@ -1,0 +1,42 @@
+{
+  "nodes": [
+    {
+      "id": "start",
+      "speaker": "NPC 2",
+      "npcText": "Hey little man!",
+      "choices": [
+        {
+          "text": "I brought your package!",
+          "nextNodeId": "package_delivered_response",
+          "requiresCompletedPackageID": 0
+        },
+        {
+          "text": "What did you call me?",
+          "nextNodeId": "insult"
+        }
+      ]
+    },
+    {
+      "id": "package_delivered_response",
+      "speaker": "NPC 2",
+      "npcText": "Aren't you the sweetest thing? You're too kind, thank you stranger.",
+      "choices": [
+        {
+          "text": "No problem, bye bye!",
+          "nextNodeId": "exit"
+        }
+      ]
+    },
+    {
+      "id": "insult",
+      "speaker": "NPC 2",
+      "npcText": "Didn't mean no disrespect. Anyhoots, see you around big man.",
+      "choices": [
+        {
+          "text": "Better leave it at that...",
+          "nextNodeId": "exit"
+        }
+      ]
+    }
+  ]
+}

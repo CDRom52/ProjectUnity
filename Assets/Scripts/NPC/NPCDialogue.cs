@@ -6,7 +6,7 @@ public class NPCDialogue : MonoBehaviour
 
     public void Interact()
     {
-        dialogueManager.StartDialogue(npcDialogueJson);
+        dialogueManager.StartDialogue(this, npcDialogueJson);
     }
 
 }

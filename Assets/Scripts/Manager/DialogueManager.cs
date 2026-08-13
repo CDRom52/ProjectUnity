@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
+using NUnit.Framework.Constraints;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class DialogueManager : MonoBehaviour
     public Sprite endSprite;
     private Sprite currentSprite;
     public PlayerInteraction interaction;
+    private NPCDialogue currentNPC;
 
     [Header("Choice References")]
     public Transform choiceButtonContainer;
@@ -39,8 +41,9 @@ public class DialogueManager : MonoBehaviour
         dialoguePanel.SetActive(false);
     }
 
-    public void StartDialogue(TextAsset jsonFile)
+    public void StartDialogue(NPCDialogue npc, TextAsset jsonFile)
     {
+        currentNPC = npc;
         dialogueMap.Clear();
         DialogueContainer container = JsonUtility.FromJson<DialogueContainer>(jsonFile.text);
 
@@ -63,6 +66,11 @@ public class DialogueManager : MonoBehaviour
 
         DialogueNode node = dialogueMap[nodeId];
 
+        if (ObjectiveManager.Instance != null && currentNPC != null)
+        {
+            ObjectiveManager.Instance.CheckNPCDialogue(currentNPC, node.id);
+        }
+
         nameText.text = node.speaker;
         dialogueText.text = node.npcText;
 
@@ -75,6 +83,15 @@ public class DialogueManager : MonoBehaviour
 
         foreach (DialogueChoice choice in node.choices)
         {
+            if (choice.requiresCompletedPackageID != -1)
+            {
+                bool isCompleted = ObjectiveManager.Instance.IsPackageObjectiveCompleted(choice.requiresCompletedPackageID);
+                
+                if (!isCompleted)
+                {
+                    continue; 
+                }
+            }
             GameObject buttonObj = Instantiate(choiceButtonPrefab, choiceButtonContainer);
             
             TMP_Text buttonText = buttonObj.GetComponentInChildren<TMP_Text>();
@@ -83,8 +100,14 @@ public class DialogueManager : MonoBehaviour
                 buttonText.text = choice.text;
             }
 
-            string targetNodeId = choice.nextNodeId;
-            buttonObj.GetComponent<Button>().onClick.AddListener(() => DisplayNode(targetNodeId));
+            DialogueChoice selectedChoice = choice;
+
+            buttonObj.GetComponent<Button>().onClick.AddListener(() => 
+            {
+                ProcessChoiceObjective(selectedChoice);
+
+                DisplayNode(selectedChoice.nextNodeId);
+            });
 
             if (firstButton == null)
             {
@@ -96,6 +119,19 @@ public class DialogueManager : MonoBehaviour
         {
             EventSystem.current.SetSelectedGameObject(null);
             EventSystem.current.SetSelectedGameObject(firstButton);
+        }
+    }
+
+    private void ProcessChoiceObjective(DialogueChoice choice)
+    {
+        if (choice.addObjective == null || string.IsNullOrEmpty(choice.addObjective.description)) 
+            return;
+
+        ObjectiveData objData = choice.addObjective;
+
+        if (objData.type == "DeliverPackage")
+        {
+            ObjectiveManager.Instance.AddDeliveryObjective(objData.description, objData.packageID);
         }
     }
 

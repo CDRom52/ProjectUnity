@@ -58,6 +58,18 @@ public class ObjectiveManager : MonoBehaviour
         }
     }
 
+    public bool IsPackageObjectiveCompleted(int packageID)
+    {
+        foreach (Objective obj in activeObjectives)
+        {
+            if (obj.packageID == packageID && obj.isCompleted)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void CheckNPCDialogue(NPCDialogue npc, string lineId)
     {
         foreach (Objective obj in activeObjectives)

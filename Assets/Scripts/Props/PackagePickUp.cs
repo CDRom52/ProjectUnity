@@ -59,5 +59,7 @@ public class PackagePickup : MonoBehaviour
         isDelivered = true;
 
         NotificationManager.Instance.ShowNotification($"Package delivered.");
+
+        ObjectiveManager.Instance.CheckPackageDelivery(null, id);
     }
 }
