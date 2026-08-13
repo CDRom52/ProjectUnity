@@ -4,7 +4,7 @@ using TMPro;
 
 public class ObjectiveManager : MonoBehaviour
 {
-    public static ObjectiveManager Instance { get; private set; }
+    public static ObjectiveManager Instance;
 
     [Header("UI References")]
     public GameObject objectivePanel;
@@ -16,10 +16,9 @@ public class ObjectiveManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        Instance = this;
 
-        if (objectivePanel != null) objectivePanel.SetActive(false);
+        objectivePanel.SetActive(false);
     }
 
     public void AddDeliveryObjective(string description, int packageID)
@@ -28,9 +27,9 @@ public class ObjectiveManager : MonoBehaviour
         RegisterObjective(obj);
     }
 
-    public void AddDialogueObjective(string description, NPCDialogue npc, int lineIndex)
+    public void AddDialogueObjective(string description, NPCDialogue npc, string lineId)
     {
-        Objective obj = new Objective(description, npc, lineIndex);
+        Objective obj = new Objective(description, npc, lineId);
         RegisterObjective(obj);
     }
 
@@ -59,13 +58,13 @@ public class ObjectiveManager : MonoBehaviour
         }
     }
 
-    public void CheckNPCDialogue(NPCDialogue npc, int lineIndex)
+    public void CheckNPCDialogue(NPCDialogue npc, string lineId)
     {
         foreach (Objective obj in activeObjectives)
         {
-            if (obj.isCompleted || obj.type != ObjectiveType.TriggerNPCDialogue) continue;
+            if (obj.isCompleted || obj.type != ObjectiveType.GetNPCInfo) continue;
 
-            if (obj.targetNPC == npc && obj.dialogueLineIndex == lineIndex)
+            if (obj.targetNPC == npc && obj.lineId == lineId)
             {
                 CompleteObjective(obj);
                 break;
@@ -88,7 +87,6 @@ public class ObjectiveManager : MonoBehaviour
 
     public void ToggleUI()
     {
-        if (objectivePanel != null)
-            objectivePanel.SetActive(!objectivePanel.activeSelf);
+        objectivePanel.SetActive(!objectivePanel.activeSelf);
     }
 }

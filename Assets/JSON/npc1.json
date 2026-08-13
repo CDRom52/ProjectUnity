@@ -2,8 +2,8 @@
   "nodes": [
     {
       "id": "start",
-      "speaker": "Elder Willow",
-      "npcText": "Greetings, traveler. Dark times have fallen on our village.",
+      "speaker": "NPC 1",
+      "npcText": "Hiya! Dark times have fallen on our village.",
       "choices": [
         {
           "text": "What happened here?",
@@ -17,7 +17,7 @@
     },
     {
       "id": "explain_threat",
-      "speaker": "Elder Willow",
+      "speaker": "NPC 1",
       "npcText": "Goblins stole the Sun Crystal from the shrine last night!",
       "choices": [
         {
@@ -32,7 +32,7 @@
     },
     {
       "id": "accept_quest",
-      "speaker": "Elder Willow",
+      "speaker": "NPC 1",
       "npcText": "Bless you! Head north toward the mountains.",
       "choices": [
         {

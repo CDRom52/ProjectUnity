@@ -75,25 +75,15 @@ public class PlayerInteraction : MonoBehaviour
                 player.isTalking = true;
                 nearbyNPC.Interact();
             }
-            // else if (DialogueManager.Instance.isTyping)
-            // {
-            //     // DialogueManager.Instance.Skip();
-            // }
-            // else
-            // {
-            //     // nearbyNPC.Interact();
-            // }
-
-            // if (!nearbyNPC.isTalking)
-            // {
-            //     player.isTalking = false;
-            //     // DialogueManager.Instance.Close();
-            //     nearbyNPC = null;
-            // }
-            
             return true;
         }
         return false;
+    }
+
+    public void endDialogue()
+    {
+        player.isTalking = false;
+        nearbyNPC = null;
     }
 
     private bool TryPickUp()

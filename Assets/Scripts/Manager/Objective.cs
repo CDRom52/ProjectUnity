@@ -3,7 +3,7 @@ using UnityEngine;
 public enum ObjectiveType
 {
     DeliverPackage,
-    TriggerNPCDialogue
+    GetNPCInfo
 }
 
 [System.Serializable]
@@ -13,12 +13,12 @@ public class Objective
     public ObjectiveType type;
     public bool isCompleted;
 
-    [Header("Delivery Target (If DeliverPackage)")]
+    [Header("Delivery Target")]
     public int packageID;
 
-    [Header("NPC Target (If TriggerNPCDialogue)")]
+    [Header("NPC Target")]
     public NPCDialogue targetNPC;
-    public int dialogueLineIndex;
+    public string lineId;
 
     public Objective(string description, int packageID)
     {
@@ -28,12 +28,12 @@ public class Objective
         isCompleted = false;
     }
 
-    public Objective(string description, NPCDialogue targetNPC, int dialogueLineIndex)
+    public Objective(string description, NPCDialogue targetNPC, string lineId)
     {
         this.description = description;
-        type = ObjectiveType.TriggerNPCDialogue;
+        type = ObjectiveType.GetNPCInfo;
         this.targetNPC = targetNPC;
-        this.dialogueLineIndex = dialogueLineIndex;
+        this.lineId = lineId;
         isCompleted = false;
     }
 }

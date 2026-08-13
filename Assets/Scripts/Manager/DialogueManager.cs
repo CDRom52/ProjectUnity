@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class DialogueManager : MonoBehaviour
     public Sprite nextSprite;
     public Sprite endSprite;
     private Sprite currentSprite;
+    public PlayerInteraction interaction;
 
     [Header("Choice References")]
     public Transform choiceButtonContainer;
@@ -34,7 +36,7 @@ public class DialogueManager : MonoBehaviour
 
     void Awake()
     {
-        
+        dialoguePanel.SetActive(false);
     }
 
     public void StartDialogue(TextAsset jsonFile)
@@ -69,6 +71,8 @@ public class DialogueManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
+        GameObject firstButton = null;
+
         foreach (DialogueChoice choice in node.choices)
         {
             GameObject buttonObj = Instantiate(choiceButtonPrefab, choiceButtonContainer);
@@ -81,13 +85,24 @@ public class DialogueManager : MonoBehaviour
 
             string targetNodeId = choice.nextNodeId;
             buttonObj.GetComponent<Button>().onClick.AddListener(() => DisplayNode(targetNodeId));
+
+            if (firstButton == null)
+            {
+                firstButton = buttonObj;
+            }
+        }
+
+        if (firstButton != null)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+            EventSystem.current.SetSelectedGameObject(firstButton);
         }
     }
 
     public void EndDialogue()
     {
         dialoguePanel.SetActive(false);
-        Debug.Log("Dialogue Finished.");
+        interaction.endDialogue();
     }
 
     // public void ShowDialogue(string npcName, DialogueNode node, NPCDialogue npc)
