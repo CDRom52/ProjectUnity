@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
-using NUnit.Framework.Constraints;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -193,60 +192,4 @@ public class DialogueManager : MonoBehaviour
     //     DisplayChoices();
     // }
 
-    // private void DisplayChoices()
-    // {
-    //     ClearChoices();
-
-    //     if (currentChoices == null || currentChoices.Count == 0) return;
-
-    //     if (nextImage != null) nextImage.gameObject.SetActive(false);
-
-    //     foreach (DialogueChoice choice in currentChoices)
-    //     {
-    //         GameObject btnObj = Instantiate(choiceButtonPrefab, choiceButtonContainer);
-    //         activeChoiceButtons.Add(btnObj);
-
-    //         TextMeshProUGUI btnText = btnObj.GetComponentInChildren<TextMeshProUGUI>();
-    //         if (btnText != null) btnText.text = choice.choiceText;
-
-    //         Button button = btnObj.GetComponent<Button>();
-    //         int targetIndex = choice.targetLineIndex;
-
-    //         button.onClick.AddListener(() => OnSelectChoice(targetIndex));
-    //     }
-    // }
-
-    // private void OnSelectChoice(int targetLineIndex)
-    // {
-    //     ClearChoices();
-
-    //     if (nextImage != null) nextImage.gameObject.SetActive(true);
-
-    //     if (currentNPC != null)
-    //     {
-    //         currentNPC.JumpToLine(targetLineIndex);
-    //     }
-    // }
-
-    // private void ClearChoices()
-    // {
-    //     foreach (GameObject btn in activeChoiceButtons)
-    //     {
-    //         Destroy(btn);
-    //     }
-    //     activeChoiceButtons.Clear();
-    // }
-
-    // public void Close()
-    // {
-    //     ClearChoices();
-    //     dialoguePanel.SetActive(false);
-    //     currentSprite = nextSprite;
-    //     if (nextImage != null) nextImage.gameObject.SetActive(true);
-    // }
-
-    // public void LastLine()
-    // {
-    //     currentSprite = endSprite;
-    // }
 }

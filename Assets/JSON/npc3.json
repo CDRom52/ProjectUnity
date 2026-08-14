@@ -1,0 +1,41 @@
+{
+  "nodes": [
+    {
+      "id": "start",
+      "speaker": "NPC 3",
+      "npcText": "Hey dude!",
+      "choices": [
+        {
+          "text": "I got a package! Is this for you?",
+          "nextNodeId": "package_delivered_response"
+        },
+        {
+          "text": "Don't call me dude, buddy.",
+          "nextNodeId": "insult"
+        }
+      ]
+    },
+    {
+      "id": "package_delivered_response",
+      "speaker": "NPC 3",
+      "npcText": "That's not mine actually, the guy you're looking for is on that mountain just south east of here.",
+      "choices": [
+        {
+          "text": "You're a doll, bye bye!",
+          "nextNodeId": "exit"
+        }
+      ]
+    },
+    {
+      "id": "insult",
+      "speaker": "NPC 3",
+      "npcText": "Don't call me buddy, amigo.",
+      "choices": [
+        {
+          "text": "That's enough.",
+          "nextNodeId": "exit"
+        }
+      ]
+    }
+  ]
+}

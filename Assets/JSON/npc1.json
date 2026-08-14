@@ -3,10 +3,10 @@
     {
       "id": "start",
       "speaker": "NPC 1",
-      "npcText": "Hiya! Dark times have fallen on our village.",
+      "npcText": "Hiya! Can I help you sir?",
       "choices": [
         {
-          "text": "What happened here?",
+          "text": "Is this your ship down by the water?",
           "nextNodeId": "explain_threat"
         },
         {
@@ -18,14 +18,14 @@
     {
       "id": "explain_threat",
       "speaker": "NPC 1",
-      "npcText": "Goblins stole the Sun Crystal from the shrine last night!",
+      "npcText": "Yes, we just crashed! Care to help? You could get this package to my fellow shipmate over yonder.",
       "choices": [
         {
-          "text": "I'll help you get the crystal back.",
+          "text": "Can do!",
           "nextNodeId": "accept_quest",
           "addObjective": {
             "type": "DeliverPackage",
-            "description": "Deliver the medical package to the Guard.",
+            "description": "Deliver the package to NPC 1's shipmate.",
             "packageID": 0
           }
         },
@@ -38,7 +38,7 @@
     {
       "id": "accept_quest",
       "speaker": "NPC 1",
-      "npcText": "Bless you! Head north toward the mountains.",
+      "npcText": "You're too kind young sir! Head north east toward one of the pillar mountains.",
       "choices": [
         {
           "text": "[End Dialogue]",

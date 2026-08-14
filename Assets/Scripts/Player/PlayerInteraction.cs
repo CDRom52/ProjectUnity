@@ -42,32 +42,20 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (!player.isCrashed)
         {
-            if (TryDialogue())
-            {
-                return;
-            }
+            if (TryDialogue()) return;
             else if (currentCarriedPackage == null)
             {
-                if (TryPickUp())
-                {
-                    return;
-                }
+                if (TryPickUp()) return;
             }
-            else if (DropPackage())
-            {
-                return;
-            }
-            if (TrySleep())
-            {
-                return;
-            }
+            else if (DropPackage()) return;
+            
+            if (TrySleep()) return;
         }
     }
 
     private bool TryDialogue()
     {
-        if (nearbyNPC == null)
-            nearbyNPC = GetThingInFront<NPCDialogue>();
+        if (nearbyNPC == null) nearbyNPC = GetThingInFront<NPCDialogue>();
         if (nearbyNPC != null)
         {
             if (!player.isTalking)

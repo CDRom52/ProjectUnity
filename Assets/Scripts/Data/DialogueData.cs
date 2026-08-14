@@ -3,7 +3,7 @@ using System.Collections.Generic;
 [System.Serializable]
 public class ObjectiveData
 {
-    public string type; // "DeliverPackage" or "GetNPCInfo"
+    public string type;
     public string description;
     public int packageID;
     public string lineId;
