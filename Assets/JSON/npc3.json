@@ -32,7 +32,7 @@
       "npcText": "Don't call me buddy, amigo.",
       "choices": [
         {
-          "text": "That's enough.",
+          "text": "Don't call me amigo, friend. Or do, I don't care, I'm leaving.",
           "nextNodeId": "exit"
         }
       ]

@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 
 public class PlayerStats : MonoBehaviour
 {
-    public PlayerController playerScript;
+    private PlayerController player;
     
     [Header("Health")]
     public float maxHealth = 100f;
@@ -15,7 +15,8 @@ public class PlayerStats : MonoBehaviour
     [Header("Energy")]
     public float maxEnergy = 100f;
     public float currentEnergy;
-    public float energyRegenRate = 5f;
+    private float energyRegenRate = 5f;
+    public float energyRegenTime = 60f;
     public float energyUseRate = 0.1f;
     public float energyFlyCost = 5f;
 
@@ -23,7 +24,7 @@ public class PlayerStats : MonoBehaviour
     public float maxStamina = 100f;
     public float currentStamina;
     public float staminaRegenTime = 5f; // Temps pour régénérer toute la stamina
-    public float staminaRegenRate; // Stamina régénérée par seconde
+    private float staminaRegenRate; // Stamina régénérée par seconde
     public float staminaUseRate = 25f; // Stamina utilisée par seconde
     public float staminaFlyCost = 5f; // Stamina utilisée pour un super saut
     public bool canBoost = true;
@@ -39,54 +40,42 @@ public class PlayerStats : MonoBehaviour
 
     void Start()
     {
+        player = player = GetComponent<PlayerController>();
         currentHealth = maxHealth;
         currentEnergy = maxEnergy;
         currentStamina = maxStamina;
-        staminaRegenRate = maxStamina / staminaRegenTime; // Régénère toute la stamina en 5 secondes
+        staminaRegenRate = maxStamina / staminaRegenTime;
+        energyRegenRate = maxEnergy / energyRegenTime;
     }
 
     void Update()
     {
         canBoost = currentStamina > staminaUseRate * eps;
         canJump = currentStamina > staminaUseRate * eps;
-        canFly = currentEnergy > energyUseRate * eps;
+        canFly = currentEnergy > energyUseRate * eps || currentStamina > staminaUseRate * eps;
         canStart = currentStamina > staminaFlyCost;
 
-        HealthUpdate();
-        EnergyUpdate();
-        StaminaUpdate();
+        StaminaEnergyUpdate();
     }
 
-    void HealthUpdate()
+    void StaminaEnergyUpdate()
     {
-        if (playerScript.isCrashed && currentHealth > healthDamageRate * Time.deltaTime)
+        if (player.controller.isGrounded && !player.isCrashed && currentEnergy < maxEnergy)
         {
-            currentHealth -= healthDamageRate * Time.deltaTime;
+            currentEnergy += energyRegenRate * Time.deltaTime;
         }
-        else if (currentHealth < maxHealth)
-        {
-            currentHealth += healthRegenRate * Time.deltaTime;
-            currentHealth = Mathf.Min(currentHealth, maxHealth);
-        }
-    }
-    void EnergyUpdate()
-    {
-        if (playerScript.isBoosting && currentEnergy > energyUseRate * Time.deltaTime)
-        {
-            currentEnergy -= energyUseRate * Time.deltaTime;
-        }
-    }
-    void StaminaUpdate()
-    {
+
         if (_staminaTimer > 0)
         {
             _staminaTimer -= Time.deltaTime;
         }
-        else if (currentStamina < maxStamina && canFly && !(playerScript.isSprinting && !playerScript.controller.isGrounded))
+        else if (currentStamina < maxStamina && canFly && !(player.isSprinting && !player.controller.isGrounded))
         {
             currentStamina += staminaRegenRate * Time.deltaTime;
+            currentEnergy -= energyUseRate * Time.deltaTime;
+            currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
+            currentEnergy = Mathf.Clamp(currentEnergy, 0, maxEnergy);
         }
-        currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
     }
     
     public void AirBoost()
@@ -104,6 +93,5 @@ public class PlayerStats : MonoBehaviour
     public void BoostFlying()
     {
         currentStamina -= staminaFlyCost;
-        currentEnergy -=energyFlyCost;
     }
 }

@@ -1,10 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using NUnit.Framework;
-using Unity.Collections;
-using Unity.Multiplayer.Center.Common.Analytics;
-using Unity.VisualScripting;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -77,6 +70,10 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
     [Header("Attack")]
     public bool punchLeft = false;
+
+    [Header("Water")]
+    public float waterLevel = 20f;
+    public float boostHeight = 50f;
 
     [Header("Slope Settings")]
     public float maxSlopeAngle = 45f;
@@ -187,7 +184,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
         boostDirectionHorizontal = Vector3.Scale(boostDirection, new Vector3(1, 0, 1)).normalized;
 
         Vector3 actualDirection = Vector3.RotateTowards(velocity.normalized, boostDirection, boostRotationSpeed * Time.deltaTime, 0f);
-        float speed = Mathf.Max(0.7f *airBoostSpeed, velocity.magnitude);
+        float speed = Mathf.Max(airBoostSpeed, velocity.magnitude);
         velocity = actualDirection * speed;
         
         Quaternion targetRotation = Quaternion.LookRotation(boostDirectionHorizontal);
@@ -215,11 +212,16 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
             float pitch = cameraTransform.forward.y;
             float speedChange = pitch * -15f;
             float newSpeed = velocity.magnitude + (speedChange - glideDrag) * Time.deltaTime;
+
+            if (transform.position.y < waterLevel + boostHeight)
+            {
+                newSpeed = airBoostSpeed;
+            }
             velocity = velocity.normalized * newSpeed;
             Vector3 horizontalVelocity = new Vector3(velocity.x, 0f, velocity.z);
             transform.rotation = Quaternion.LookRotation(horizontalVelocity);
         }
-
+        
         if (velocity.magnitude < stallVelocity || !stats.canFly || !askFly)
         {
             askFly = false;
@@ -263,7 +265,7 @@ public class PlayerController : MonoBehaviour //hérite de MonoBehaviour (classe
 
     void ApplyGravity()
     {
-        if (transform.position.y < 20f)
+        if (transform.position.y < waterLevel)
         {
             velocity.y -= gravity * Time.deltaTime;
             isCrashed = false;
