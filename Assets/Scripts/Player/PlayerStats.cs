@@ -40,7 +40,7 @@ public class PlayerStats : MonoBehaviour
 
     void Start()
     {
-        player = player = GetComponent<PlayerController>();
+        player = GetComponent<PlayerController>();
         currentHealth = maxHealth;
         currentEnergy = maxEnergy;
         currentStamina = maxStamina;
@@ -69,7 +69,7 @@ public class PlayerStats : MonoBehaviour
         {
             _staminaTimer -= Time.deltaTime;
         }
-        else if (currentStamina < maxStamina && canFly && !(player.isSprinting && !player.controller.isGrounded))
+        else if (currentStamina < maxStamina && currentEnergy > 0f && canFly && !(player.isSprinting && !player.controller.isGrounded))
         {
             currentStamina += staminaRegenRate * Time.deltaTime;
             currentEnergy -= energyUseRate * Time.deltaTime;

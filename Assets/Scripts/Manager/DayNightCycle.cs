@@ -3,15 +3,22 @@ using System.Collections;
 
 public class DayNightCycle : MonoBehaviour
 {
-    [SerializeField] private float dayLengthInMinutes = 10f;
+    private DayTimeManager dayTime;
     [SerializeField] private Light sunLight;
     [SerializeField] private Light moonLight;
+    private float targetIntensity;
+    public float dayIntensity = 1f;
+    public float nightIntensity = 0.01f;
+    public float intensitySpeed = 1f;
     
     private float rotationSpeed;
 
     void Start()
     {
-        rotationSpeed = 360f / (dayLengthInMinutes * 60f);
+        sunLight.intensity = 0f;
+        moonLight.intensity = 0f;
+        dayTime = GetComponent<DayTimeManager>();
+        rotationSpeed = 360f / (24 * 3600 / dayTime.timeScale * 2);
         StartCoroutine(ShadowUpdate());
     }
 
@@ -25,12 +32,24 @@ public class DayNightCycle : MonoBehaviour
             float sunDot = Vector3.Dot(sunLight.transform.forward, Vector3.down);
             if (sunDot > 0)
             {
-                if(!sunLight.enabled) sunLight.enabled = true;
+                targetIntensity = dayIntensity;
+                sunLight.intensity = Mathf.Lerp(sunLight.intensity, targetIntensity, intensitySpeed * Time.deltaTime);
+                if(!sunLight.enabled)
+                {
+                    sunLight.enabled = true;
+                    sunLight.intensity = 0f;
+                }
                 if(moonLight.enabled) moonLight.enabled = false;
             }
             else
             {
-                if(sunLight.enabled) sunLight.enabled = false;
+                targetIntensity = nightIntensity;
+                moonLight.intensity = Mathf.Lerp(moonLight.intensity, targetIntensity, intensitySpeed * Time.deltaTime);
+                if(sunLight.enabled)
+                {
+                    sunLight.enabled = false;
+                    moonLight.intensity = 0f;
+                }
                 if(!moonLight.enabled) moonLight.enabled = true;
             }
 

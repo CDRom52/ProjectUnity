@@ -454,7 +454,7 @@ Light:
   serializedVersion: 13
   m_Type: 1
   m_Color: {r: 0.7528302, g: 1, b: 0.9807654, a: 1}
-  m_Intensity: 0.1
+  m_Intensity: 0.01
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -2534,6 +2534,8 @@ MonoBehaviour:
   healthSlider: {fileID: 1368126690}
   energySlider: {fileID: 1769277532}
   stats: {fileID: 2042177416}
+  manager: {fileID: 1577604679}
+  timeDisplay: {fileID: 1389140365}
 --- !u!114 &491503585
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8225,7 +8227,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1577604676}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: -0.38268343, y: 0, z: 0, w: 0.92387956}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -8233,7 +8235,7 @@ Transform:
   - {fileID: 203844589}
   - {fileID: 42096688}
   m_Father: {fileID: 482176910}
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -45, y: 0, z: 0}
 --- !u!114 &1577604678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8246,9 +8248,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae87713351142e941b683813328c3777, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  dayLengthInMinutes: 10
   sunLight: {fileID: 203844588}
   moonLight: {fileID: 42096690}
+  dayIntensity: 1
+  nightIntensity: 0.01
+  intensitySpeed: 1
 --- !u!114 &1577604679
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8261,6 +8265,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 002a819f954333e4fa5e2b54a4b12d08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  timeScale: 3600
+  currentDay: 0
+  hours: 0
+  minutes: 0
 --- !u!1 &1596648580
 GameObject:
   m_ObjectHideFlags: 0
